@@ -3,8 +3,15 @@ import { AuthButton } from "@/components/auth-button";
 import { Hero } from "@/components/hero";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import Link from "next/link";
+import { getAllProducts } from "@/lib/supabase/repository";
 
 export default function Home() {
+  const products = getAllProducts().then(data => {
+    console.log('Products:', data);
+  }).catch(error => {
+    console.error('Error fetching products:', error);
+  });
+
   return (
     <main className="min-h-screen flex flex-col items-center">
       <div className="flex-1 w-full flex flex-col gap-20 items-center">

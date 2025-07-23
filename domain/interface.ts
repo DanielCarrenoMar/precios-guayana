@@ -11,6 +11,8 @@ export interface Product {
     user_id: string
 }
 
+
+
 export interface Location {
     latitude: number
     longitude: number

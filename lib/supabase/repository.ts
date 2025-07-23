@@ -8,6 +8,8 @@ export async function getAllProducts() {
       .from('product')
       .select()
 
+  console.log('data antes', data)
+
   if (error) throw error
   return data as Product[]
 }
