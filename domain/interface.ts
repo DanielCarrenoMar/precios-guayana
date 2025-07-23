@@ -1,5 +1,6 @@
 export interface Product {
     id: number
+    user_id: number
     imagePath: string
     title: string
     description: string
@@ -8,10 +9,17 @@ export interface Product {
     category: string
     created_at: string
     updated_at: string
-    user_id: string
 }
 
-interface User {
+export interface UserPetition {
+    imageProfilePath?: string
+    name?: string
+    email?: string
+    bios?: string
+    location?: Location
+    created_at?: string
+}
+export interface User {
     imageProfilePath: string
     name: string
     email: string
@@ -20,27 +28,35 @@ interface User {
     created_at: string
 }
 
-interface Offer {
+export interface OfferPetition {
+    id?: number
+    user_id?: number
+    description?: string
+    url?: string
+    created_at?: string
+    updated_at?: string
+}
+export interface Offer {
     id: number
-    user_id: string
+    user_id: number
     description: string
     url: string
     created_at: string
     updated_at: string
 }
 
-interface Comment {
+export interface Comment {
     id: number
-    user_id: string
+    user_id: number
     product_id: number
     comment: string
     created_at: string
     updated_at: string
 }
 
-interface Review {
+export interface Review {
     id: number
-    user_id: string
+    user_id: number
     product_id: number
     rating: number
     created_at: string
