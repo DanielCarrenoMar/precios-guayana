@@ -8,10 +8,21 @@ export interface Product {
     title: string
     description: string
     price: number
-    location: Location
+    latitude?: number
+    longitude?: number
     category: string
     created_at: string
     updated_at: string
+}
+export interface ProductPetition {
+    user_id?: UUID
+    imagePath?: string
+    title?: string
+    description?: string
+    price?: number
+    latitude?: number
+    longitude?: number
+    category?: string
 }
 
 export interface UserPetition {
@@ -19,7 +30,8 @@ export interface UserPetition {
     imageProfilePath?: string
     name?: string
     bios?: string
-    location?: Location
+    latitude?: number
+    longitude?: number
     contact?: string
     created_at?: string
 }
@@ -28,7 +40,8 @@ export interface User {
     imageProfilePath?: string
     name: string
     bios: string
-    location?: Location
+    latitude?: number
+    longitude?: number
     contact?: string
     created_at: string
 }
@@ -66,9 +79,4 @@ export interface Review {
     rating: number
     created_at: string
     updated_at: string
-}
-
-export interface Location {
-    latitude: number
-    longitude: number
 }
