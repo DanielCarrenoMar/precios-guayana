@@ -1,6 +1,8 @@
+import { UUID } from "crypto"
+
 export interface Product {
     id: number
-    user_id: number
+    user_id: UUID
     imagePath: string
     rate: number
     title: string
@@ -13,24 +15,26 @@ export interface Product {
 }
 
 export interface UserPetition {
+    id: UUID
     imageProfilePath?: string
     name?: string
-    email?: string
     bios?: string
     location?: Location
+    contact?: string
     created_at?: string
 }
 export interface User {
-    imageProfilePath: string
+    id: UUID
+    imageProfilePath?: string
     name: string
-    email: string
     bios: string
-    location: Location
+    location?: Location
+    contact?: string
     created_at: string
 }
 
 export interface OfferPetition {
-    id?: number
+    id: UUID
     user_id?: number
     description?: string
     url?: string
@@ -48,7 +52,7 @@ export interface Offer {
 
 export interface Comment {
     id: number
-    user_id: number
+    user_id: UUID
     product_id: number
     comment: string
     created_at: string
@@ -57,7 +61,7 @@ export interface Comment {
 
 export interface Review {
     id: number
-    user_id: number
+    user_id: UUID
     product_id: number
     rating: number
     created_at: string

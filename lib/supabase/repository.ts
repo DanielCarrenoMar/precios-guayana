@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
-import { Offer, OfferPetition, Product, Review } from '@/domain/interface'
+import { Offer, OfferPetition, Product, Review, UserPetition } from '@/domain/interface'
+import { User } from '@supabase/supabase-js'
 
 export async function getAllProducts() {
   const supabase = await createClient()
@@ -37,12 +38,24 @@ export async function getReviewsByProductId(productId: number) {
   if (error) throw error
   return data as Review[]
 }
+
 export async function insertOffer(offer: OfferPetition) {
   const supabase = await createClient()
 
   const { data, error } = await supabase
       .from('offer')
       .insert(offer)
+
+  if (error) throw error
+  return data
+}
+
+export async function insertUser(user: UserPetition) {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+      .from('user')
+      .insert(user)
 
   if (error) throw error
   return data
