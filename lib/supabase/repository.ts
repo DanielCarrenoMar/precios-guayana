@@ -58,16 +58,18 @@ export async function getProductById(id: number): Promise<Product> {
 export async function getProductsByNameAndCategory(name: string, category: string): Promise<Product[]> {
   const supabase = await createClient()
 
-  const { data, error } = await supabase
-      .from('product')
-      .select()
-      .ilike('title', `%${name}%`)
-      .eq('category', category)
+  let query = supabase.from('product').select()
+  if (name && name.trim() !== "") {
+    query = query.ilike('title', `%${name}%`)
+  }
+  if (category && category.trim() !== "") {
+    query = query.eq('category', category)
+  }
 
+  const { data, error } = await query
   if (error) throw error
 
   const products = data as Product[]
-
   return Promise.all(products.map(product => calReviewProduct(product)))
 }
 

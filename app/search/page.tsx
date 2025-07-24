@@ -2,7 +2,7 @@
 import ProductCard from "@/components/productCard";
 import SearchBar from "@/components/ui/search-bar";
 import { Product } from "@/domain/interface";
-import { getAllProducts } from "@/lib/supabase/repository";
+import { getAllProducts, getProductsByNameAndCategory } from "@/lib/supabase/repository";
 import { useEffect, useState } from "react";
 
 export default function SearchPage() {
@@ -10,7 +10,7 @@ export default function SearchPage() {
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    getAllProducts().then((data) => {
+    getProductsByNameAndCategory(searchText, "").then((data) => {
       setProducts(data);
     }).catch((error) => {
       console.error("Error fetching products:", error);
