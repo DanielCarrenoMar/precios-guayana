@@ -11,7 +11,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ price, company, product, image, rating = 4 }: ProductCardProps) {
   return (
-    <div className="w-40 h-56 rounded-xl shadow-md border border-gray-200 flex flex-col justify-between bg-white overflow-hidden">
+    <div className="w-40 h-56 rounded-xl shadow-md border border-gray-200 flex flex-col justify-between bg-white">
       {/* Price badge */}
       <div className="flex justify-center mt-2">
         <div className="bg-primary text-primary-foreground rounded-full px-6 py-1 text-lg font-bold shadow-sm">

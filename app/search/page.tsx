@@ -25,7 +25,7 @@ export default function SearchPage() {
         onChange={(e) => setSearchText(e.target.value)}
       />
       <h1>Buscar</h1>
-      <ul>
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((product) => (
           <ProductCard
             key={product.id}
@@ -33,7 +33,7 @@ export default function SearchPage() {
             image={product.imagePath}
             company={product.user_id.toString()}
             product={product.title}
-            rating={4}
+            rating={product.rate}
           />
         ))}
       </ul>

@@ -2,6 +2,7 @@ export interface Product {
     id: number
     user_id: number
     imagePath: string
+    rate: number
     title: string
     description: string
     price: number
