@@ -3,7 +3,7 @@ import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import Link from "next/link";
 import { OfferSection } from "@/app/(home)/components/offerSection";
-import NavBarMobile from "@/components/NavBarMobile";
+import NavBarMobile from "@/components/nav-bar-mobile";
 
 export default function Home() {
 

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/client'
 import { Offer, OfferPetition, Product } from '@/domain/interface'
 
 export async function getAllProducts() {

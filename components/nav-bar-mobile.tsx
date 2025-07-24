@@ -1,5 +1,5 @@
 import React from "react";
-import { Home, Bell, Bookmark, User, Plus, Map } from "lucide-react";
+import { Home, Bell, Bookmark, User, Plus, Map, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function NavBarMobile() {
@@ -10,7 +10,7 @@ export default function NavBarMobile() {
                     <Home size={32} />
                 </Link>
                 <Link href="/search" className="flex flex-col items-center text-primary">
-                    <Bell size={32} />
+                    <Search size={32} />
                 </Link>
             </span>
 
