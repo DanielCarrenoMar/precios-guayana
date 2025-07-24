@@ -1,7 +1,7 @@
-export default function UploadProductPage(){
+export default function CreatePage(){
   return (
     <div>
-      <h1>Subir Producto</h1>
+      <h1>Crear Publicacion</h1>
       <input type="text" placeholder="Buscar productos..." />
     </div>
   );
