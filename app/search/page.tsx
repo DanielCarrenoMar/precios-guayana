@@ -2,7 +2,7 @@
 import ProductCard from "@/components/productCard";
 import SearchBar from "@/components/ui/search-bar";
 import { Product } from "@/domain/interface";
-import { getAllProducts, getProductsByNameAndCategory } from "@/lib/supabase/repository";
+import { getProductsByNameAndCategory } from "@/lib/supabase/repository";
 import { useEffect, useState } from "react";
 
 export default function SearchPage() {
