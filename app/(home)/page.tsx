@@ -2,7 +2,7 @@ import { DeployButton } from "@/components/deploy-button";
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import Link from "next/link";
-import { OfferSection } from "@/components/offerSection";
+import { OfferSection } from "@/app/(home)/components/offerSection";
 
 export default function Home() {
 

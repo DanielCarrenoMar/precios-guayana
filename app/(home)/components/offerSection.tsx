@@ -1,4 +1,4 @@
-import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "../../../components/ui/carousel";
 
 export function OfferSection() {
   return (
