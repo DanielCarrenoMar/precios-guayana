@@ -49,6 +49,7 @@ export interface User {
 export interface OfferPetition {
     id: UUID
     user_id?: number
+    imagePath?: string
     description?: string
     url?: string
     created_at?: string
@@ -57,6 +58,7 @@ export interface OfferPetition {
 export interface Offer {
     id: number
     user_id: number
+    imagePath: string
     description: string
     url: string
     created_at: string

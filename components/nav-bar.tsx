@@ -65,7 +65,7 @@ const Navbar = async ({
         { title: "Inicio", url: "/" },
         {
             title: "Buscar",
-            url: "#",
+            url: "/search",
             items: [
                 {
                     title: "Productos",
@@ -77,7 +77,7 @@ const Navbar = async ({
                     title: "Ofertas",
                     description: "Our mission is to innovate and empower the world",
                     icon: <Trees className="size-5 shrink-0" />,
-                    url: "/offers",
+                    url: "/search",
                 },
             ],
         },
