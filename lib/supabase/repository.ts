@@ -168,3 +168,18 @@ export async function insertUser(user: UserPetition) {
 
   if (error) throw error
 }
+
+// storage
+
+export async function uploadImage(file: File): Promise<string> {
+  const supabase = await createClient()
+  const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}`
+  const { data, error } = await supabase.storage
+      .from('product-image')
+      .upload(fileName, file)
+
+  if (error) throw error
+
+  const { publicUrl } = supabase.storage.from('product-image').getPublicUrl(fileName).data
+  return publicUrl
+}
