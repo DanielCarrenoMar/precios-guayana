@@ -2,7 +2,7 @@ import { DeployButton } from "@/components/deploy-button";
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import Link from "next/link";
-import { OfferCarousel } from "@/components/offerCarousel";
+import { OfferSection } from "@/components/offerSection";
 
 export default function Home() {
 
@@ -20,10 +20,13 @@ export default function Home() {
             <AuthButton />
           </div>
         </nav>
-        <div className="flex-1 flex flex-col gap-20 max-w-5xl p-5">
-          <OfferCarousel />
-          <h1 className="">Prueba de Color</h1>
-        </div>
+        <section className="flex-1 flex flex-col gap-20 max-w-5xl p-5">
+          <h1 className="text-primary text-4xl">Precios Guayana</h1>
+        </section>
+        <section className="">
+          <h2 className="text-primary text-2xl">Ofertas Recientes</h2>
+          <OfferSection/>
+        </section>
 
         <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
           <p>
