@@ -92,7 +92,7 @@ export default function SearchPage() {
             price={product.price}
             image={product.imagesPath[0]}
             company={product.user_id.toString()}
-            product={product.title + product.imagesPath}
+            product={product.title}
             rating={product.rate}
 
           />
