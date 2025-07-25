@@ -1,5 +1,4 @@
 "use client";
-import NavBarMobile from "@/components/nav-bar-mobile";
 import OfferCard from "@/components/offerCard";
 import ProductCard from "@/components/productCard";
 import { Button } from "@/components/ui/button";
@@ -12,9 +11,9 @@ export default function SearchPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [searchText, setSearchText] = useState("");
-  const [category, setCategory] = useState("");
-  const [sortBy, setSortBy] = useState<("price" | "review")>("price");
-  const [sortOrder, setSortOrder] = useState<("asc" | "desc")>("asc");
+  const [category, ] = useState("");
+  const [sortBy, ] = useState<("price" | "review")>("price");
+  const [sortOrder, ] = useState<("asc" | "desc")>("asc");
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState<"product" | "offer">("product");
 
@@ -83,33 +82,38 @@ export default function SearchPage() {
         />
       </section>
 
-      <h1>Buscar</h1>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        { type === "product" ?
-        products.map((product) => (
-          <ProductCard
-            key={product.id}
-            id={product.id}
-            price={product.price}
-            image={product.imagesPath[0]}
-            company={product.user_id.toString()}
-            product={product.title}
-            rating={product.rate}
+      {
+        loading ?
+          <section>
+            <h1>Buscar</h1>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {type === "product" ?
+                products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    id={product.id}
+                    price={product.price}
+                    image={product.imagesPath[0]}
+                    company={product.user_id.toString()}
+                    product={product.title}
+                    rating={product.rate}
 
-          />
-        )) :
-        offers.map((offer) => (
-          <OfferCard
-            key={offer.id}
-            id={offer.id}
-            price={-1}
-            image={offer.imagesPath[0]}
-            company={offer.user_id.toString()}
-            product={offer.description}
-          />
-        ))}
-      </ul>
-      <NavBarMobile />
+                  />
+                )) :
+                offers.map((offer) => (
+                  <OfferCard
+                    key={offer.id}
+                    id={offer.id}
+                    price={-1}
+                    image={offer.imagesPath[0]}
+                    company={offer.user_id.toString()}
+                    product={offer.description}
+                  />
+                ))}
+            </ul>
+          </section> :
+          <div>Cargando</div>
+      }
     </>
   );
 }
