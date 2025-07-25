@@ -57,7 +57,7 @@ interface NavbarProps {
 const Navbar = async ({
     logo = {
         url: "/",
-        src: "logo.png",
+        src: "/logo.png",
         alt: "logo",
         title: "Precios Guayana",
     },
