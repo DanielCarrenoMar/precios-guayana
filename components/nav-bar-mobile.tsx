@@ -9,7 +9,7 @@ export default function NavBarMobile() {
                 <Link href="/" className="flex flex-col items-center text-primary">
                     <Home size={32} />
                 </Link>
-                <Link href="/search" className="flex flex-col items-center text-primary">
+                <Link href="/" className="flex flex-col items-center text-primary">
                     <Search size={32} />
                 </Link>
             </span>
@@ -17,7 +17,7 @@ export default function NavBarMobile() {
 
             {/* Central floating button */}
             <div className="absolute left-1/2 -translate-x-1/2 -top-6 z-10">
-                <Link href="/create" className="bg-white border-2 border-green-200 shadow-lg rounded-full flex items-center justify-center hover:bg-green-50">
+                <Link href="protected/create" className="bg-white border-2 border-green-200 shadow-lg rounded-full flex items-center justify-center hover:bg-green-50">
                     <Plus size={48} className="text-green-700" />
                 </Link>
             </div>
@@ -26,7 +26,7 @@ export default function NavBarMobile() {
                 <Link href="/map" className="flex flex-col items-center text-primary">
                     <Map size={32} />
                 </Link>
-                <Link href="/profile" className="flex flex-col items-center text-primary">
+                <Link href="protected/profile" className="flex flex-col items-center text-primary">
                     <User size={32} />
                 </Link>
             </span>
