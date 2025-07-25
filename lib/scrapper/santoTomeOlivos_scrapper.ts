@@ -1,9 +1,9 @@
-/*import { Product } from '@/domain/interface';
 import { chromium } from 'playwright';
+import { Product, ProductPetition } from '@/domain/interface';
+import { insertProduct } from '@/lib/supabase/repository';
 
-
-async function scrapeProducts(): Promise<Product[]> {
-  const products: Product[] = [];
+async function scrapeProducts(): Promise<ProductPetition[]> {
+  const products: ProductPetition[] = [];
   const browser = await chromium.launch({ headless: false });
   const page = await browser.newPage();
 
@@ -30,20 +30,16 @@ async function scrapeProducts(): Promise<Product[]> {
   for (const product of productsElements) {
     const name = await product.$eval('.product-title', el => el.textContent?.trim() || '');
     const description = await product.$eval('.product-description', el => el.textContent?.trim() || '');
-    //const latitude = parseFloat(await supabase.from('user').select('latitude').eq('name', 'Santo Tomé Olivos').single().then(res => res.data?.latitude || 0));
-    //const longitude = parseFloat(await supabase.from('user').select('longitude').eq('name', 'Santo Tomé Olivos').single().then(res => res.data?.longitude || 0));
-    const price = await product.$eval('.product-price', el => el.textContent?.trim() || '');
+    const price = parseFloat(await product.$eval('.product-price', el => el.textContent?.trim() || ''));
     const category = await product.$eval('.product-category', el => el.textContent?.trim() || '');
-    const link = await product.$eval('a', el => (el as HTMLAnchorElement).href);
 
     products.push({
       title: name,
       description,
-      latitude: latitude,
-      longitude: longitude,
       price,
       category,
-      url: link,
+      imagesPath: [""],
+      user_id: "313f4245-e05a-4144-9905-dd0ff64e78a1"
     });
   }
 
@@ -51,13 +47,13 @@ async function scrapeProducts(): Promise<Product[]> {
   return products;
 }
 
-async function saveInSupabase(products: Product[]) {
+async function saveInSupabase(products: ProductPetition[]) {
   for (const product of products) {
-    const { data, error } = await supabase.from('products').insert([product]);
-    if (error) {
+    try {
+      await insertProduct(product);
+      console.log('Insertado:', product.title);
+    } catch (error) {
       console.error('Error inserting:', error);
-    } else {
-      console.log('Insertado:', data);
     }
   }
 }
@@ -68,4 +64,4 @@ async function main() {
   await saveInSupabase(products);
 }
 
-main().catch(console.error);*/
+main().catch(console.error);

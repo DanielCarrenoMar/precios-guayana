@@ -1,5 +1,6 @@
-/*import { chromium } from 'playwright';
-import { Product, ProductPetition } from '@/domain/interface';
+import { chromium } from 'playwright';
+import { Product, ProductPetition } from 'domain/interface';
+import { insertProduct } from 'lib/supabase/repository';
 
 async function scrapeProducts(): Promise<ProductPetition[]> {
   const products: ProductPetition[] = [];
@@ -30,10 +31,7 @@ async function scrapeProducts(): Promise<ProductPetition[]> {
     const name = await product.$eval('.product-title', el => el.textContent?.trim() || '');
     const description = await product.$eval('.product-description', el => el.textContent?.trim() || '');
     const price = parseFloat(await product.$eval('.product-price', el => el.textContent?.trim() || ''));
-    //const latitude = parseFloat(await supabase.from('user').select('latitude').eq('name', 'Santo Tomé Castillito').single().then(res => res.data?.latitude || 0));
-    //const longitude = parseFloat(await supabase.from('user').select('longitude').eq('name', 'Santo Tomé Castillito').single().then(res => res.data?.longitude || 0));
     const category = await product.$eval('.product-category', el => el.textContent?.trim() || '');
-    const link = await product.$eval('a', el => (el as HTMLAnchorElement).href);
 
     products.push({
       title: name,
@@ -49,13 +47,13 @@ async function scrapeProducts(): Promise<ProductPetition[]> {
   return products;
 }
 
-async function saveInSupabase(products: Product[]) {
+async function saveInSupabase(products: ProductPetition[]) {
   for (const product of products) {
-    const { data, error } = await supabase.from('products').insert([product]);
-    if (error) {
+    try {
+      await insertProduct(product);
+      console.log('Insertado:', product.title);
+    } catch (error) {
       console.error('Error inserting:', error);
-    } else {
-      console.log('Insertado:', data);
     }
   }
 }
@@ -65,6 +63,7 @@ async function main() {
   const products = await scrapeProducts();
   console.log(`Se extrajeron ${products.length} productos.`);
   console.log(products)
+  await saveInSupabase(products);
 }
 
-main().catch(console.error);*/
+main().catch(console.error);
