@@ -57,7 +57,7 @@ interface NavbarProps {
 const Navbar = async ({
     logo = {
         url: "/",
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
+        src: "logo.png",
         alt: "logo",
         title: "Precios Guayana",
     },
@@ -65,21 +65,7 @@ const Navbar = async ({
         { title: "Inicio", url: "/" },
         {
             title: "Buscar",
-            url: "/search",
-            items: [
-                {
-                    title: "Productos",
-                    description: "The latest industry news, updates, and info",
-                    icon: <Book className="size-5 shrink-0" />,
-                    url: "/search",
-                },
-                {
-                    title: "Ofertas",
-                    description: "Our mission is to innovate and empower the world",
-                    icon: <Trees className="size-5 shrink-0" />,
-                    url: "/search",
-                },
-            ],
+            url: "/search"
         },
         {
             title: "Mapa",
