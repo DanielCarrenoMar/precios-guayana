@@ -1,25 +1,8 @@
 import { chromium, Page } from 'playwright';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
+import { Product, ProductPetition } from '@/domain/interface';
 
-dotenv.config({ path: 'lib/scrapper/credentials.env' });
-
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_KEY = process.env.SUPABASE_KEY || '';
-const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-interface Product {
-  title: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-  price: string;
-  category: string;
-  url: string;
-}
-
-async function scrapeProducts(): Promise<Product[]> {
-  const products: Product[] = [];
+async function scrapeProducts(): Promise<ProductPetition[]> {
+  const products: ProductPetition[] = [];
   const browser = await chromium.launch({ headless: false });
   const page = await browser.newPage();
 
@@ -46,20 +29,19 @@ async function scrapeProducts(): Promise<Product[]> {
   for (const product of productsElements) {
     const name = await product.$eval('.product-title', el => el.textContent?.trim() || '');
     const description = await product.$eval('.product-description', el => el.textContent?.trim() || '');
-    const price = await product.$eval('.product-price', el => el.textContent?.trim() || '');
-    const latitude = parseFloat(await supabase.from('user').select('latitude').eq('name', 'Santo Tomé Castillito').single().then(res => res.data?.latitude || 0));
-    const longitude = parseFloat(await supabase.from('user').select('longitude').eq('name', 'Santo Tomé Castillito').single().then(res => res.data?.longitude || 0));
+    const price = parseFloat(await product.$eval('.product-price', el => el.textContent?.trim() || ''));
+    //const latitude = parseFloat(await supabase.from('user').select('latitude').eq('name', 'Santo Tomé Castillito').single().then(res => res.data?.latitude || 0));
+    //const longitude = parseFloat(await supabase.from('user').select('longitude').eq('name', 'Santo Tomé Castillito').single().then(res => res.data?.longitude || 0));
     const category = await product.$eval('.product-category', el => el.textContent?.trim() || '');
     const link = await product.$eval('a', el => (el as HTMLAnchorElement).href);
 
     products.push({
       title: name,
       description,
-      latitude: latitude,
-      longitude: longitude,
       price,
       category,
-      url: link,
+      imagesPath: [""],
+      user_id: "313f4245-e05a-4144-9905-dd0ff64e78a1"
     });
   }
 
@@ -69,19 +51,20 @@ async function scrapeProducts(): Promise<Product[]> {
 
 async function saveInSupabase(products: Product[]) {
   for (const product of products) {
-    const { data, error } = await supabase.from('products').insert([product]);
+    /*const { data, error } = await supabase.from('products').insert([product]);
     if (error) {
       console.error('Error inserting:', error);
     } else {
       console.log('Insertado:', data);
-    }
+    }*/
   }
 }
 
 async function main() {
+  console.log("Comienzo")
   const products = await scrapeProducts();
   console.log(`Se extrajeron ${products.length} productos.`);
-  await saveInSupabase(products);
+  console.log(products)
 }
 
 main().catch(console.error);
