@@ -1,6 +1,6 @@
 import { chromium, Page } from 'playwright';
 import { insertOffer } from '@/lib/supabase/repository'
-import { Offer } from '@/domain/interface'
+import { Offer, OfferPetition } from '@/domain/interface'
 import { config } from 'dotenv';
 config({ path: 'data.env' });
 
@@ -25,13 +25,12 @@ async function loginInstagram(page: Page) {
     await humanWait(2000, 4000);
 }
 
-async function scrapeInstagramOffers() {
+async function scrapeInstagramOffers(username: string, tag: string = 'oferta'): Promise<OfferPetition[]> {
     const browser = await chromium.launch({ headless: false, args: ['--no-sandbox'] });
-    const context = await browser.newContext();
-    const page = await context.newPage();
+    const page = await browser.newPage();
     await loginInstagram(page);
 
-    await page.goto('https://www.instagram.com/explore/tags/oferta/');
+    await page.goto(`https://www.instagram.com/${username}/`, { waitUntil: 'networkidle' });
     await page.waitForSelector("a[href^='/p/']", { timeout: 60000 });
 
     for (let i = 0; i < 6; i++) {
@@ -40,33 +39,33 @@ async function scrapeInstagramOffers() {
     }
 
     const links: string[] = await page.$$eval("a[href^='/p/']", els => els.map(e => (e as HTMLAnchorElement).href));
-    console.log(`Se encontraron ${links.length} publicaciones.`);
 
-    const offers: any[] = [];
+    const results: OfferPetition[] = [];
 
-    for (const url of links) {
-        await page.goto(url);
-        await humanWait(1000, 2000);
-        let img_url: string | null = null;
-        let description: string | null = null;
-        try {
-            img_url = await page.getAttribute("img[src]", "src");
-            description = await page.$eval("span", el => el.textContent || '');
-        } catch (e) {
-            console.log(`Error extrayendo datos de ${url}: ${e}`);
-        }
+    for (const postUrl of links) {
+        await page.goto(postUrl, { waitUntil: 'networkidle' });
+        await page.waitForTimeout(1000);
 
-        offers.push({
-            url,
-            imagesPath: img_url ? [img_url] : [""],
-            description,
-            user_id: ""
+        const caption = await page.$eval(
+            'div[role="dialog"] ul > div > li > div > div > div > span, article ul > div > li > div > div > div > span',
+            el => el.textContent || ''
+        );
+        const matched = caption.includes(`#${tag}`);
+
+        const imagesPath: string[] = await page.$$eval('article img', imgs =>
+            imgs.map(img => (img as HTMLImageElement).src)
+        );
+
+        results.push({
+            description: caption,
+            url: postUrl,
+            imagesPath,
+            user_id: "5b247d1e-a080-486d-b21e-d48f1f4a2a0c",
         });
-        await humanWait(500, 1500);
     }
 
     await browser.close();
-    return offers;
+    return results;
 }
 
 async function saveOffersInSupabase(offers: any[]) {
@@ -81,7 +80,8 @@ async function saveOffersInSupabase(offers: any[]) {
 }
 
 async function main() {
-    const offers = await scrapeInstagramOffers();
+    const username = 'Rio Supermarket'; 
+    const offers = await scrapeInstagramOffers(username, 'oferta');
     await saveOffersInSupabase(offers);
 }
 console.log('About to run main...');
