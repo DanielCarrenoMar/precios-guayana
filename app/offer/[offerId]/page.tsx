@@ -24,7 +24,7 @@ export default async function OfferPage({ params}: OfferPageProps){
     <>
       <h1>Oferta</h1>
       <div>
-        <img src={offer.imagePath} alt="Imagen de la oferta" />
+        <img src={offer.imagesPath[0]} alt="Imagen de la oferta" />
         <p>{offer.description}</p>
         <p>Precio: {offer.url}</p>
       </div>

@@ -1,22 +1,6 @@
-import { chromium, Page } from 'playwright';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
+/*import { Product } from '@/domain/interface';
+import { chromium } from 'playwright';
 
-dotenv.config({ path: 'lib/scrapper/credentials.env' });
-
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_KEY = process.env.SUPABASE_KEY || '';
-const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-interface Product {
-  title: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-  price: string;
-  category: string;
-  url: string;
-}
 
 async function scrapeProducts(): Promise<Product[]> {
   const products: Product[] = [];
@@ -46,8 +30,8 @@ async function scrapeProducts(): Promise<Product[]> {
   for (const product of productsElements) {
     const name = await product.$eval('.product-title', el => el.textContent?.trim() || '');
     const description = await product.$eval('.product-description', el => el.textContent?.trim() || '');
-    const latitude = parseFloat(await supabase.from('user').select('latitude').eq('name', 'Santo Tomé Olivos').single().then(res => res.data?.latitude || 0));
-    const longitude = parseFloat(await supabase.from('user').select('longitude').eq('name', 'Santo Tomé Olivos').single().then(res => res.data?.longitude || 0));
+    //const latitude = parseFloat(await supabase.from('user').select('latitude').eq('name', 'Santo Tomé Olivos').single().then(res => res.data?.latitude || 0));
+    //const longitude = parseFloat(await supabase.from('user').select('longitude').eq('name', 'Santo Tomé Olivos').single().then(res => res.data?.longitude || 0));
     const price = await product.$eval('.product-price', el => el.textContent?.trim() || '');
     const category = await product.$eval('.product-category', el => el.textContent?.trim() || '');
     const link = await product.$eval('a', el => (el as HTMLAnchorElement).href);
@@ -84,4 +68,4 @@ async function main() {
   await saveInSupabase(products);
 }
 
-main().catch(console.error);
+main().catch(console.error);*/

@@ -1,4 +1,4 @@
-import { chromium, Page } from 'playwright';
+import { chromium } from 'playwright';
 import { Product, ProductPetition } from '@/domain/interface';
 
 async function scrapeProducts(): Promise<ProductPetition[]> {

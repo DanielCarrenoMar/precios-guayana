@@ -1,5 +1,5 @@
 import React from "react";
-import { Home, Bell, Bookmark, User, Plus, Map, Search } from "lucide-react";
+import { Home, User, Plus, Map, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function NavBarMobile() {

@@ -1,6 +1,5 @@
 "use client";
 import dynamic from 'next/dynamic';
-import ProductMap from './components/product_map';
 
 const DynamicProductMap = dynamic(
   () => import('./components/product_map'), {

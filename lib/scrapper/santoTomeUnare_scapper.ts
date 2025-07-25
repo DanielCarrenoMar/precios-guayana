@@ -1,22 +1,5 @@
-import { chromium, Page } from 'playwright';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
-
-dotenv.config({ path: 'lib/scrapper/credentials.env' });
-
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_KEY = process.env.SUPABASE_KEY || '';
-const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-interface Product {
-  title: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-  price: string;
-  category: string;
-  url: string;
-}
+/*import { Product } from '@/domain/interface';
+import { chromium} from 'playwright';
 
 async function scrapeProducts(): Promise<Product[]> {
   const products: Product[] = [];
@@ -84,4 +67,4 @@ async function main() {
   await saveInSupabase(products);
 }
 
-main().catch(console.error);
+main().catch(console.error);*/

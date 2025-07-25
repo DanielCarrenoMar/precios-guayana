@@ -1,12 +1,4 @@
-import { chromium, Page } from 'playwright';
-import { createClient } from '@supabase/supabase-js';
-import * as dotenv from 'dotenv';
-
-dotenv.config({ path: 'credentials.env', override: true });
-
-const SUPABASE_URL = process.env.SUPABASE_URL!;
-const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY!;
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+/*import { chromium, Page } from 'playwright';
 
 const IG_USER = process.env.IG_USER!;
 const IG_PASS = process.env.IG_PASS!;
@@ -76,4 +68,4 @@ await humanWait(500, 1500);
 await browser.close();
 }
 
-scrapeInstagram().catch(e => console.error(`Ocurrió un error: ${e}`));
+scrapeInstagram().catch(e => console.error(`Ocurrió un error: ${e}`));*/

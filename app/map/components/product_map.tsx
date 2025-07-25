@@ -27,8 +27,9 @@ export default function ProductMap() {
                 />
                 <LocationMarker />
                 {products.map((product) => (
-                    <Marker key={product.id} position={[product.latitude!!, product.longitude!!]}  icon={new L.Icon({
-                    iconUrl: product.imagePath, // Path to your image in the public folder
+                    product.latitude && product.longitude &&
+                    <Marker key={product.id} position={[product.latitude, product.longitude]}  icon={new L.Icon({
+                    iconUrl: product.imagesPath[0], // Path to your image in the public folder
                     iconSize: [38, 38], // Size of the icon [width, height]
                     iconAnchor: [19, 38], // Point of the icon which will correspond to marker's location
                     popupAnchor: [0, -38] // Point from which the popup should open relative to the iconAnchor

@@ -73,9 +73,13 @@ export default function CreatePage() {
       setErrorText("Primero sube al menos una imagen.");
       return;
     }
+    if (!userId){
+      setErrorText("No esta registrado");
+      return;
+    }
 
     insertProduct({
-      user_id: userId!!,
+      user_id: userId,
       title: title,
       description: description,
       price: parseFloat(price),

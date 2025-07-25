@@ -47,7 +47,7 @@ export async function getAllProducts(): Promise<Product[]> {
       
   if (error) throw error
 
-  var products = data as Product[]
+  let products = data as Product[]
 
   products = await Promise.all(
     products.map(product => parseProduct(product))
@@ -85,7 +85,7 @@ export async function getProductsByNameAndCategory(name: string, category: strin
   const { data, error } = await query
   if (error) throw error
 
-  var products = data as Product[]
+  let products = data as Product[]
 
   products = await Promise.all(
     products.map(product => parseProduct(product))
@@ -139,7 +139,7 @@ export async function getLastOffers(numberOfOffers: number): Promise<Offer[]> {
 
   if (error) throw error
 
-  var offers = data as Offer[]
+  let offers = data as Offer[]
 
   offers = await Promise.all(
     offers.map(offer => parseOffer(offer))
@@ -176,7 +176,7 @@ export async function getOffersByUserId(userId: UUID): Promise<Offer[]> {
       .eq('user_id', userId)
 
   if (error) throw error
-  var offers = data as Offer[]
+  let offers = data as Offer[]
 
   offers = await Promise.all(
     offers.map(offer => parseOffer(offer))
@@ -274,7 +274,7 @@ export async function insertUser(user: UserPetition) {
 export async function uploadImage(file: File): Promise<string> {
   const supabase = await createClient()
   const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}`
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
       .from('product-image')
       .upload(fileName, file)
 

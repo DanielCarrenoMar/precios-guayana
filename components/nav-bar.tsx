@@ -1,4 +1,4 @@
-import { Book, Menu, Trees } from "lucide-react";
+import { Menu } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -63,10 +63,6 @@ const Navbar = async ({
     },
     menu = [
         { title: "Inicio", url: "/" },
-        {
-            title: "Buscar",
-            url: "/search"
-        },
         {
             title: "Mapa",
             url: "/map",
