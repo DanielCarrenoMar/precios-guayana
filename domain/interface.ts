@@ -50,21 +50,21 @@ export interface ProductPetition extends ProductInsert {
 
 export interface Offer {
     id: number
-    user_id: number
+    user_id: UUID
     imagesPath: string[]
     description: string
     url: string
     created_at: string
     updated_at: string
 }
-export interface OfferPetition {
-    id: UUID
-    user_id?: number
+export interface OfferInsert {
+    user_id: UUID
     imagesPath?: string[]
     description?: string
     url?: string
-    created_at?: string
-    updated_at?: string
+}
+export interface OfferPetition extends OfferInsert {
+    imagesPath: string[]
 }
 
 export interface Comment {

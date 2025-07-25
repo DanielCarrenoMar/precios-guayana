@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-import { Offer, OfferPetition, Product, ProductInsert, ProductPetition, Review, UserPetition } from '@/domain/interface'
+import { Offer, OfferInsert, OfferPetition, Product, ProductInsert, ProductPetition, Review, UserPetition } from '@/domain/interface'
 import { UUID } from 'crypto'
 import { User } from '@supabase/supabase-js'
 
@@ -151,12 +151,20 @@ export async function getLastOffers(numberOfOffers: number): Promise<Offer[]> {
 export async function insertOffer(offer: OfferPetition) {
   const supabase = await createClient()
 
+  const query: OfferInsert = { 
+    user_id: offer.user_id,
+    description: offer.description,
+    url: offer.url
+  }
+
   const { data, error } = await supabase
       .from('offer')
-      .insert(offer)
+      .insert(query)
+      .select("id")
+  if (error || !data[0].id) throw error
+  const id = data[0].id
 
-  if (error) throw error
-  return data
+  insertOfferImages(id, offer.imagesPath)
 }
 
 export async function getOffersByUserId(userId: UUID): Promise<Offer[]> {

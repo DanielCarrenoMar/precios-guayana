@@ -73,8 +73,7 @@ export default function CreatePage() {
       setErrorText("Primero sube al menos una imagen.");
       return;
     }
-    // Aquí puedes llamar a tu función para insertar el producto en la base de datos
-    // usando title, description, price, lat, lng, category, imageUrls (ahora un array)
+
     insertProduct({
       user_id: userId!!,
       title: title,
@@ -85,8 +84,8 @@ export default function CreatePage() {
       category: category,
       imagesPath: imageUrls,
     });
-    // Optional: Redirect or show success message after submission
-    // redirect("/success-page");
+
+    redirect("/profile");
   }
 
   return (
