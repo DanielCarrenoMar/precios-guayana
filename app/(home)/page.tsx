@@ -6,6 +6,7 @@ import SearchBar from "@/components/ui/search-bar";
 import { Offer, Product } from "@/domain/interface";
 import { getLastOffers, getProductsByNameAndCategory } from "@/lib/supabase/repository";
 import { useEffect, useState } from "react";
+import OfferSection from "./components/offer_section";
 
 export default function SearchPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -82,6 +83,8 @@ export default function SearchPage() {
           onChange={(e) => setSearchText(e.target.value)}
         />
       </section>
+
+      <OfferSection />
 
       {
         !loading ?
