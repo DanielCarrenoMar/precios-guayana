@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
-import { Product, ProductPetition } from 'domain/interface';
-import { insertProduct } from 'lib/supabase/repository';
+import { Product, ProductPetition } from '@/domain/interface';
+import { insertProduct } from '../supabase/repository';
 
 async function scrapeProducts(): Promise<ProductPetition[]> {
   const products: ProductPetition[] = [];
