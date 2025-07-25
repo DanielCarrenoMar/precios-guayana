@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+/*import { chromium } from 'playwright';
 import { Product, ProductPetition } from '@/domain/interface';
 
 async function scrapeProducts(): Promise<ProductPetition[]> {
@@ -51,12 +51,12 @@ async function scrapeProducts(): Promise<ProductPetition[]> {
 
 async function saveInSupabase(products: Product[]) {
   for (const product of products) {
-    /*const { data, error } = await supabase.from('products').insert([product]);
+    const { data, error } = await supabase.from('products').insert([product]);
     if (error) {
       console.error('Error inserting:', error);
     } else {
       console.log('Insertado:', data);
-    }*/
+    }
   }
 }
 
@@ -67,4 +67,4 @@ async function main() {
   console.log(products)
 }
 
-main().catch(console.error);
+main().catch(console.error);*/
