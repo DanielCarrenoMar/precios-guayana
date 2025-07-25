@@ -1,15 +1,19 @@
 import { getOfferById } from '@/lib/supabase/repository';
 import { notFound } from 'next/navigation';
 
-export default async function OfferPage({params}: {params: Promise<{ offerIdText: string }>}){
-  const { offerIdText } = await params
-  const offerId = parseInt(offerIdText)
+interface Props {
+  params: Promise<{ offerId: string }>
+}
 
-  if (isNaN(offerId)) {
+export default async function OfferPage({params}: Props){
+  const { offerId } = await params
+  const offerIdNum = parseInt( offerId)
+
+  if (isNaN(offerIdNum)) {
     notFound();
   }
 
-  const offer = await getOfferById(offerId);
+  const offer = await getOfferById(offerIdNum);
 
   if (!offer) {
     notFound();
