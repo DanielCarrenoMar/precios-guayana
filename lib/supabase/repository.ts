@@ -1,21 +1,34 @@
 import { createClient } from '@/lib/supabase/client'
-import { Offer, OfferPetition, Product, ProductPetition, Review, UserPetition } from '@/domain/interface'
+import { Offer, OfferPetition, Product, ProductPetition, ProductTable, Review, UserPetition } from '@/domain/interface'
 import { UUID } from 'crypto'
 import { User } from '@supabase/supabase-js'
 
 // Products
 
-async function calReviewProduct(product: Product): Promise<Product> {
+async function parseProduct(product: Product): Promise<Product> {
+  const imagesPath = await getImagesByProductId(product.id)
   const reviews = await getReviewsByProductId(product.id)
   const avgRating =
     reviews && reviews.length
       ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length
       : 0
-  return { ...product, rate: avgRating }
+  return { ...product, imagesPath, rate: avgRating }
 }
 
 export async function insertProduct(product: ProductPetition) {
   const supabase = await createClient()
+
+
+  const insertedProduct: ProductTable = {
+    user_id: product.user_id,
+    title: product.title || "",
+    description: product.description || "",
+    price: product.price || 0,
+    latitude: product.latitude,
+    longitude: product.longitude,
+    category: product.category || ""
+  }
+
   const { error } = await supabase
       .from('product')
       .insert(product)
@@ -31,13 +44,13 @@ export async function getAllProducts(): Promise<Product[]> {
       
   if (error) throw error
 
-  const products = data as Product[]
+  var products = data as Product[]
 
-  const productsWithRatings = await Promise.all(
-    products.map(product => calReviewProduct(product))
+  products = await Promise.all(
+    products.map(product => parseProduct(product))
   )
 
-  return productsWithRatings;
+  return products;
 }
 
 export async function getProductById(id: number): Promise<Product> {
@@ -52,7 +65,7 @@ export async function getProductById(id: number): Promise<Product> {
   if (error) throw error
 
   const product = data as Product
-  return calReviewProduct(product)
+  return parseProduct(product)
 }
 
 export async function getProductsByNameAndCategory(name: string, category: string): Promise<Product[]> {
@@ -69,8 +82,136 @@ export async function getProductsByNameAndCategory(name: string, category: strin
   const { data, error } = await query
   if (error) throw error
 
-  const products = data as Product[]
-  return Promise.all(products.map(product => calReviewProduct(product)))
+  var products = data as Product[]
+
+  products = await Promise.all(
+    products.map(product => parseProduct(product))
+  )
+
+  return products;
+}
+
+// Product Images
+
+async function getImagesByProductId(productId: number): Promise<string[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+      .from('product_image')
+      .select('imagePath')
+      .eq('product_id', productId)
+
+  if (error) throw error
+  const imagesPath = data.map((item: { imagePath: string }) => item.imagePath)
+  return imagesPath.length > 0 ? imagesPath : [""]
+}
+
+async function insertProductImages(productId: number, imagesPath: string[]) {
+  const supabase = await createClient()
+  const imageObjects = imagesPath.map(imagePath => ({
+    product_id: productId,
+    imagePath
+  }))
+  const { error } = await supabase
+      .from('product_image')
+      .insert(imageObjects)
+  if (error) throw error
+}
+
+// Offers
+
+async function parseOffer(offer: Offer): Promise<Offer> {
+  const imagesPath = await getImagesByOfferId(offer.id)
+  return { ...offer, imagesPath }
+}
+
+export async function getLastOffers(numberOfOffers: number): Promise<Offer[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+      .from('offer')
+      .select()
+      .order('created_at', { ascending: false })
+      .limit(numberOfOffers)
+
+  if (error) throw error
+
+  var offers = data as Offer[]
+
+  offers = await Promise.all(
+    offers.map(offer => parseOffer(offer))
+  )
+
+  return offers
+}
+
+export async function insertOffer(offer: OfferPetition) {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+      .from('offer')
+      .insert(offer)
+
+  if (error) throw error
+  return data
+}
+
+export async function getOffersByUserId(userId: UUID): Promise<Offer[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+      .from('offer')
+      .select()
+      .eq('user_id', userId)
+
+  if (error) throw error
+  var offers = data as Offer[]
+
+  offers = await Promise.all(
+    offers.map(offer => parseOffer(offer))
+  )
+
+  return offers
+}
+
+export async function getOfferById(id: number): Promise<Offer> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+      .from('offer')
+      .select()
+      .eq('id', id)
+      .single()
+
+  if (error) throw error
+  return parseOffer(data as Offer)
+}
+
+// Offer Images
+
+async function getImagesByOfferId(offerId: number): Promise<string[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+      .from('offer_image')
+      .select('imagePath')
+      .eq('offer_id', offerId)
+
+  if (error) throw error
+  const imagesPath = data.map((item: { imagePath: string }) => item.imagePath)
+  return imagesPath.length > 0 ? imagesPath : [""]
+}
+
+async function insertOfferImages(offerId: number, imagesPath: string[]) {
+  const supabase = await createClient()
+  const imageObjects = imagesPath.map(imagePath => ({
+    offer_id: offerId,
+    imagePath
+  }))
+  const { error } = await supabase
+      .from('offer_image')
+      .insert(imageObjects)
+  if (error) throw error
 }
 
 // Reviews
@@ -95,57 +236,6 @@ export async function insertReview(review: Review) {
   if (error) throw error
 }
 
-// Offers
-
-export async function getLastOffers(numberOfOffers: number): Promise<Offer[]> {
-  const supabase = await createClient()
-
-  const { data, error } = await supabase
-      .from('offer')
-      .select()
-      .order('created_at', { ascending: false })
-      .limit(numberOfOffers)
-
-  if (error) throw error
-  return data as Offer[]
-}
-
-export async function insertOffer(offer: OfferPetition) {
-  const supabase = await createClient()
-
-  const { data, error } = await supabase
-      .from('offer')
-      .insert(offer)
-
-  if (error) throw error
-  return data
-}
-
-export async function getOffersByUserId(userId: UUID): Promise<Offer[]> {
-  const supabase = await createClient()
-
-  const { data, error } = await supabase
-      .from('offer')
-      .select()
-      .eq('user_id', userId)
-
-  if (error) throw error
-  return data as Offer[]
-}
-
-export async function getOfferById(id: number): Promise<Offer> {
-  const supabase = await createClient()
-
-  const { data, error } = await supabase
-      .from('offer')
-      .select()
-      .eq('id', id)
-      .single()
-
-  if (error) throw error
-  return data as Offer
-}
-
 // Users
 
 export async function getUserById(id: UUID): Promise<User> {
@@ -168,7 +258,6 @@ export async function insertUser(user: UserPetition) {
 
   if (error) throw error
 }
-
 // storage
 
 export async function uploadImage(file: File): Promise<string> {

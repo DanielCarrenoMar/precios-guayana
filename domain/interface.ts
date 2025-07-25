@@ -1,30 +1,5 @@
 import { UUID } from "crypto"
 
-export interface Product {
-    id: number
-    user_id: UUID
-    imagePath: string
-    rate: number
-    title: string
-    description: string
-    price: number
-    latitude?: number
-    longitude?: number
-    category: string
-    created_at: string
-    updated_at: string
-}
-export interface ProductPetition {
-    user_id?: UUID
-    imagePath?: string
-    title?: string
-    description?: string
-    price?: number
-    latitude?: number
-    longitude?: number
-    category?: string
-}
-
 export interface UserPetition {
     id: UUID
     imageProfilePath?: string
@@ -46,10 +21,44 @@ export interface User {
     created_at: string
 }
 
+export interface Product {
+    id: number
+    user_id: UUID
+    imagesPath: string[]
+    rate: number
+    title: string
+    description: string
+    price: number
+    latitude?: number
+    longitude?: number
+    category: string
+    created_at: string
+    updated_at: string
+}
+export interface ProductPetition {
+    user_id: UUID
+    imagesPath?: string[]
+    title?: string
+    description?: string
+    price?: number
+    latitude?: number
+    longitude?: number
+    category?: string
+}
+export interface ProductTable {
+    user_id: UUID
+    title: string
+    description: string
+    price: number
+    latitude?: number
+    longitude?: number
+    category: string
+}
+
 export interface OfferPetition {
     id: UUID
     user_id?: number
-    imagePath?: string
+    imagesPath?: string[]
     description?: string
     url?: string
     created_at?: string
@@ -58,7 +67,7 @@ export interface OfferPetition {
 export interface Offer {
     id: number
     user_id: number
-    imagePath: string
+    imagesPath: string[]
     description: string
     url: string
     created_at: string

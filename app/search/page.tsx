@@ -4,7 +4,7 @@ import ProductCard from "@/components/productCard";
 import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/ui/search-bar";
 import { Offer, Product } from "@/domain/interface";
-import { getLastOffers, getProductsByNameAndCategory } from "@/lib/supabase/repository";
+import { getImagesByProductId, getLastOffers, getProductsByNameAndCategory } from "@/lib/supabase/repository";
 import { useEffect, useState } from "react";
 
 export default function SearchPage() {
@@ -29,6 +29,7 @@ export default function SearchPage() {
           }
         });
         setProducts(sortedProducts);
+        console.log("Products fetched:", sortedProducts);
       }).catch((error) => {
         console.error("Error fetching products:", error);
       });
@@ -36,12 +37,11 @@ export default function SearchPage() {
     function fetchOffers() {
       getLastOffers(10).then((data) => {
         setOffers(data);
+        console.log("Offers fetched:", data);
       }).catch((error) => {
         console.error("Error fetching offers:", error);
       });
     }
-
-    console.log("Fetching data for type:", type);
 
     if (type === "product") {
       fetchProducts();
@@ -90,9 +90,9 @@ export default function SearchPage() {
             key={product.id}
             id={product.id}
             price={product.price}
-            image={product.imagePath}
+            image={product.imagesPath[0]}
             company={product.user_id.toString()}
-            product={product.title}
+            product={product.title + product.imagesPath}
             rating={product.rate}
 
           />
@@ -102,7 +102,7 @@ export default function SearchPage() {
             key={offer.id}
             id={offer.id}
             price={-1}
-            image={offer.imagePath}
+            image={offer.imagesPath[0]}
             company={offer.user_id.toString()}
             product={offer.description}
           />
