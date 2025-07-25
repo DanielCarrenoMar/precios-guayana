@@ -1,13 +1,7 @@
 import { getOfferById } from '@/lib/supabase/repository';
 import { notFound } from 'next/navigation';
 
-interface OfferPageProps {
-  params: {
-    offerId: string; // El nombre de la carpeta dinámica ([offerId])
-  };
-}
-
-export default async function OfferPage({ params}: OfferPageProps){
+export default async function OfferPage({ params }: { params: { offerId: string } }){
   const offerId = parseInt(params.offerId);
 
   if (isNaN(offerId)) {
