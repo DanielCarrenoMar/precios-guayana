@@ -1,8 +1,9 @@
 import { getProductById } from '@/lib/supabase/repository';
 import { notFound } from 'next/navigation';
 
-export default async function ProductPage({ params }: { params: { productId: string } }){
-  const productId = parseInt(params.productId);
+export default async function ProductPage({params}: {params: Promise<{ productIdText: string }>}){
+  const { productIdText } = await params
+  const productId = parseInt(productIdText)
 
   const product = await getProductById(productId);
 

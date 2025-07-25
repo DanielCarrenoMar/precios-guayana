@@ -1,8 +1,9 @@
 import { getOfferById } from '@/lib/supabase/repository';
 import { notFound } from 'next/navigation';
 
-export default async function OfferPage({ params }: { params: { offerId: string } }){
-  const offerId = parseInt(params.offerId);
+export default async function OfferPage({params}: {params: Promise<{ offerIdText: string }>}){
+  const { offerIdText } = await params
+  const offerId = parseInt(offerIdText)
 
   if (isNaN(offerId)) {
     notFound();
@@ -18,7 +19,9 @@ export default async function OfferPage({ params }: { params: { offerId: string 
     <>
       <h1>Oferta</h1>
       <div>
-        <img src={offer.imagesPath[0]} alt="Imagen de la oferta" />
+        {offer.imagesPath && offer.imagesPath.length > 0 && (
+          <img src={offer.imagesPath[0]} alt="Imagen de la oferta" />
+        )}
         <p>{offer.description}</p>
         <p>Precio: {offer.url}</p>
       </div>
