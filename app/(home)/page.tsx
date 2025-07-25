@@ -29,6 +29,7 @@ export default function SearchPage() {
           }
         });
         setProducts(sortedProducts);
+        setLoading(false);
         console.log("Products fetched:", sortedProducts);
       }).catch((error) => {
         console.error("Error fetching products:", error);
@@ -37,6 +38,7 @@ export default function SearchPage() {
     function fetchOffers() {
       getLastOffers(10).then((data) => {
         setOffers(data);
+        setLoading(false);
         console.log("Offers fetched:", data);
       }).catch((error) => {
         console.error("Error fetching offers:", error);
@@ -48,7 +50,6 @@ export default function SearchPage() {
     } else {
       fetchOffers();
     }
-    setLoading(false);
   }, [type, searchText, category, sortBy, sortOrder]);
 
   return (
@@ -83,7 +84,7 @@ export default function SearchPage() {
       </section>
 
       {
-        loading ?
+        !loading ?
           <section>
             <h1>Buscar</h1>
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
