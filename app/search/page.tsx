@@ -1,4 +1,5 @@
 "use client";
+import OfferCard from "@/components/offerCard";
 import ProductCard from "@/components/productCard";
 import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/ui/search-bar";
@@ -87,21 +88,23 @@ export default function SearchPage() {
         products.map((product) => (
           <ProductCard
             key={product.id}
+            id={product.id}
             price={product.price}
             image={product.imagePath}
             company={product.user_id.toString()}
             product={product.title}
             rating={product.rate}
+
           />
         )) :
         offers.map((offer) => (
-          <ProductCard
+          <OfferCard
             key={offer.id}
+            id={offer.id}
             price={-1}
             image={offer.imagePath}
             company={offer.user_id.toString()}
             product={offer.description}
-            rating={3}
           />
         ))}
       </ul>

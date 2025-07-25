@@ -2,18 +2,17 @@
 import Link from "next/link";
 import React from "react";
 
-interface ProductCardProps {
+interface OfferCardProps {
   id: number;
   price: number;
   company: string;
   product: string;
   image: string;
-  rating?: number; // 0-5
 }
 
-export default function ProductCard({ id, price, company, product, image, rating = 4 }: ProductCardProps) {
+export default function OfferCard({ id, price, company, product, image }: OfferCardProps) {
   return (
-    <Link href={`/product/${id}`} className="w-40 h-56 rounded-xl shadow-md border border-gray-200 flex flex-col justify-between bg-white">
+    <Link href={`/offer/${id}`} className="w-40 h-56 rounded-xl shadow-md border border-gray-200 flex flex-col justify-between bg-white">
       {/* Price badge */}
       <div className="flex justify-center mt-2">
         <div className="bg-primary text-primary-foreground rounded-full px-6 py-1 text-lg font-bold shadow-sm">
@@ -34,18 +33,6 @@ export default function ProductCard({ id, price, company, product, image, rating
       </div>
       <div className="bg-secondary/10 px-2 py-1 text-center">
         <span className="text-secondary font-semibold text-xs tracking-wide uppercase">{product}</span>
-      </div>
-      {/* Rating */}
-      <div className="flex justify-center items-center pb-2 pt-1">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i} className={
-            i < rating
-              ? "text-primary text-lg"
-              : "text-gray-300 text-lg"
-          }>
-            ★
-          </span>
-        ))}
       </div>
     </Link>
   );
