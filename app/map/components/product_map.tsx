@@ -5,13 +5,16 @@ import { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
+import L from 'leaflet';
+import Link from 'next/link';
 
 export default function ProductMap() {
     const [products, setProducts] = useState<Product[]>([])
 
     useEffect(() => {
         async function fetchLocationProducts() {
-            setProducts(await getAllProducts());
+            const data = await (await getAllProducts()).filter(products => products.latitude && products.longitude);
+            setProducts(data);  
         }
         fetchLocationProducts();
     }, []);
@@ -23,13 +26,23 @@ export default function ProductMap() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <LocationMarker />
-                <Marker position={[8.279540502204656, -62.76105724412922]} icon={new L.Icon({
-                    iconUrl: '/logo.png', // Path to your image in the public folder
+                {products.map((product) => (
+                    <Marker key={product.id} position={[product.latitude!!, product.longitude!!]}  icon={new L.Icon({
+                    iconUrl: product.imagePath, // Path to your image in the public folder
                     iconSize: [38, 38], // Size of the icon [width, height]
                     iconAnchor: [19, 38], // Point of the icon which will correspond to marker's location
                     popupAnchor: [0, -38] // Point from which the popup should open relative to the iconAnchor
                 })}>
-                </Marker>
+                    <Popup>
+                        <div className="flex flex-col gap-2">
+                            <h3 className="text-lg font-semibold">{product.title}</h3>
+                            <p>{product.description}</p>
+                            <p className="text-sm text-gray-500">Precio: {product.price} Bs</p>
+                            <Link href={`/product/${product.id}`} className="text-blue-500 hover:underline">Ver detalles</Link>
+                        </div>
+                    </Popup>
+                    </Marker>
+                ))}
             </MapContainer>
         </>
     );
