@@ -4,7 +4,7 @@ import ProductCard from "@/components/productCard";
 import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/ui/search-bar";
 import { Offer, Product } from "@/domain/interface";
-import { getImagesByProductId, getLastOffers, getProductsByNameAndCategory } from "@/lib/supabase/repository";
+import { getLastOffers, getProductsByNameAndCategory } from "@/lib/supabase/repository";
 import { useEffect, useState } from "react";
 
 export default function SearchPage() {

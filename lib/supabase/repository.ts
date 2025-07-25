@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-import { Offer, OfferPetition, Product, ProductPetition, ProductTable, Review, UserPetition } from '@/domain/interface'
+import { Offer, OfferPetition, Product, ProductInsert, ProductPetition, Review, UserPetition } from '@/domain/interface'
 import { UUID } from 'crypto'
 import { User } from '@supabase/supabase-js'
 
@@ -18,21 +18,24 @@ async function parseProduct(product: Product): Promise<Product> {
 export async function insertProduct(product: ProductPetition) {
   const supabase = await createClient()
 
-
-  const insertedProduct: ProductTable = {
+  const query: ProductInsert = { 
     user_id: product.user_id,
-    title: product.title || "",
-    description: product.description || "",
-    price: product.price || 0,
+    category: product.category,
+    description: product.description,
+    price: product.price,
+    title: product.title,
     latitude: product.latitude,
-    longitude: product.longitude,
-    category: product.category || ""
+    longitude: product.longitude
   }
 
-  const { error } = await supabase
+  const { data, error } = await supabase
       .from('product')
-      .insert(product)
-  if (error) throw error
+      .insert(query)
+      .select('id');
+  if (error || !data[0].id) throw error
+  const id = data[0].id
+
+  insertProductImages(id, product.imagesPath)
 }
 
 export async function getAllProducts(): Promise<Product[]> {

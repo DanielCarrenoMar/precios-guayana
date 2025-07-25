@@ -35,17 +35,7 @@ export interface Product {
     created_at: string
     updated_at: string
 }
-export interface ProductPetition {
-    user_id: UUID
-    imagesPath?: string[]
-    title?: string
-    description?: string
-    price?: number
-    latitude?: number
-    longitude?: number
-    category?: string
-}
-export interface ProductTable {
+export interface ProductInsert {
     user_id: UUID
     title: string
     description: string
@@ -54,16 +44,10 @@ export interface ProductTable {
     longitude?: number
     category: string
 }
-
-export interface OfferPetition {
-    id: UUID
-    user_id?: number
-    imagesPath?: string[]
-    description?: string
-    url?: string
-    created_at?: string
-    updated_at?: string
+export interface ProductPetition extends ProductInsert {
+    imagesPath: string[]
 }
+
 export interface Offer {
     id: number
     user_id: number
@@ -72,6 +56,15 @@ export interface Offer {
     url: string
     created_at: string
     updated_at: string
+}
+export interface OfferPetition {
+    id: UUID
+    user_id?: number
+    imagesPath?: string[]
+    description?: string
+    url?: string
+    created_at?: string
+    updated_at?: string
 }
 
 export interface Comment {
