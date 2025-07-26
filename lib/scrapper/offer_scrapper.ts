@@ -1,8 +1,6 @@
 import { chromium, Page } from 'playwright';
 import { insertOffer } from '@/lib/supabase/repository'
 import { Offer, OfferPetition } from '@/domain/interface'
-import { config } from 'dotenv';
-config({ path: 'data.env' });
 
 const IG_USER = process.env.IG_USER!;
 const IG_PASS = process.env.IG_PASS!;
