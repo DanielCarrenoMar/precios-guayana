@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
-import { Offer, OfferInsert, OfferPetition, Product, ProductInsert, ProductPetition, Review, UserPetition } from '@/domain/interface'
+import { Offer, OfferInsert, OfferPetition, Product, ProductInsert, ProductPetition, Review, UserPetition, User } from '@/domain/interface'
 import { UUID } from 'crypto'
-import { User } from '@supabase/supabase-js'
 
 // Products
 

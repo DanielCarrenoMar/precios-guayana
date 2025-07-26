@@ -9,11 +9,12 @@ interface ProductCardProps {
   product: string;
   image: string;
   rating?: number; // 0-5
+  update_at: string
 }
 
-export default function ProductCard({ id, price, company, product, image, rating = 4 }: ProductCardProps) {
+export default function ProductCard({ id, price, company, product, image, update_at, rating = 4 }: ProductCardProps) {
   return (
-    <Link href={`/product/${id}`} className="group block w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
+    <Link href={`/product/${id}`} className="group w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
       {/* Image container */}
       <div className="relative bg-gray-50 p-4 flex items-center justify-center h-48 overflow-hidden">
         {/* Price badge */}

@@ -4,26 +4,36 @@ import ProductCard from "@/components/productCard";
 import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/ui/search-bar";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Offer, Product } from "@/domain/interface";
-import { getLastOffers, getProductsByNameAndCategory } from "@/lib/supabase/repository";
+import { Offer, Product, User } from "@/domain/interface";
+import { getLastOffers, getProductsByNameAndCategory, getUserById } from "@/lib/supabase/repository";
 import { useEffect, useState } from "react";
 import OfferSection from "./components/offer_section";
 import HeroSection from "./components/hero-section";
 
+interface ProductAndUser {
+  product: Product,
+  user: User
+}
+
+interface OfferAndUser {
+  offer: Offer,
+  user: User
+}
+
 export default function SearchPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [offers, setOffers] = useState<Offer[]>([]);
+  const [productsAndUsers, setProductsAndUsers] = useState<ProductAndUser[]>([]);
+  const [offersAndUsers, setOffersAndUsers] = useState<OfferAndUser[]>([]);
   const [searchText, setSearchText] = useState("");
-  const [category, ] = useState("");
-  const [sortBy, ] = useState<("price" | "review")>("price");
-  const [sortOrder, ] = useState<("asc" | "desc")>("asc");
+  const [category,] = useState("");
+  const [sortBy,] = useState<("price" | "review")>("price");
+  const [sortOrder,] = useState<("asc" | "desc")>("asc");
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState<"product" | "offer">("product");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    function fetchProducts() {
+    function fetchProductsAndUsers() {
       getProductsByNameAndCategory(searchText, "").then((data) => {
         const sortedProducts = data.sort((a, b) => {
           if (sortBy === "price") {
@@ -32,25 +42,49 @@ export default function SearchPage() {
             return sortOrder === "asc" ? a.rate - b.rate : b.rate - a.rate;
           }
         });
-        setProducts(sortedProducts);
-        setLoading(false);
-        console.log("Products fetched:", sortedProducts);
+
+        const productAndUserPromises = sortedProducts.map(async (product) => {
+          const user = await getUserById(product.user_id);
+          return {
+            product: product,
+            user: user,
+          };
+        });
+
+        Promise.all(productAndUserPromises).then(data => {
+          setProductsAndUsers(data)
+          setLoading(false)
+        }).catch((error) => {
+          console.error("Error fetching Users:", error);
+        });
+
       }).catch((error) => {
         console.error("Error fetching products:", error);
       });
     }
     function fetchOffers() {
       getLastOffers(10).then((data) => {
-        setOffers(data);
-        setLoading(false);
-        console.log("Offers fetched:", data);
+        const offerAndUserPromises = data.map(async (offer) => {
+          const user = await getUserById(offer.user_id);
+          return {
+            offer: offer,
+            user: user,
+          };
+        });
+
+        Promise.all(offerAndUserPromises).then(data => {
+          setOffersAndUsers(data)
+          setLoading(false)
+        }).catch((error) => {
+          console.error("Error fetching Users:", error);
+        });
       }).catch((error) => {
         console.error("Error fetching offers:", error);
       });
     }
 
     if (type === "product") {
-      fetchProducts();
+      fetchProductsAndUsers();
     } else {
       fetchOffers();
     }
@@ -64,17 +98,17 @@ export default function SearchPage() {
       {/* Search Section */}
       <section className="mb-8 flex justify-center -mt-8">
         <div className="w-full max-w-2xl">
-                  <SearchBar
-          placeholder="Buscar productos y ofertas..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onFocus={() => setIsSearchFocused(true)}
-          onBlur={() => {
-            if (!searchText) {
-              setIsSearchFocused(false);
-            }
-          }}
-        />
+          <SearchBar
+            placeholder="Buscar productos y ofertas..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onFocus={() => setIsSearchFocused(true)}
+            onBlur={() => {
+              if (!searchText) {
+                setIsSearchFocused(false);
+              }
+            }}
+          />
         </div>
       </section>
 
@@ -96,42 +130,43 @@ export default function SearchPage() {
           )}
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-25">
-            {type === "product" ? (
-              products.length > 0 ? (
-                products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    price={product.price}
-                    image={product.imagesPath[0]}
-                    company={product.user_id.toString()}
-                    product={product.title}
-                    rating={product.rate}
-                  />
-                ))
+              {type === "product" ? (
+                productsAndUsers.length > 0 ? (
+                  productsAndUsers.map((data) => (
+                    <ProductCard
+                      key={data.product.id}
+                      id={data.product.id}
+                      price={data.product.price}
+                      image={data.product.imagesPath[0]}
+                      company={data.user.name}
+                      product={data.product.title}
+                      rating={data.product.rate}
+                      update_at={data.product.updated_at}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-muted-foreground">No se encontraron productos</p>
+                  </div>
+                )
               ) : (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-muted-foreground">No se encontraron productos</p>
-                </div>
-              )
-            ) : (
-              offers.length > 0 ? (
-                offers.map((offer) => (
-                  <OfferCard
-                    key={offer.id}
-                    id={offer.id}
-                    price={-1}
-                    image={offer.imagesPath[0]}
-                    company={offer.user_id.toString()}
-                    product={offer.description}
-                  />
-                ))
-              ) : (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-muted-foreground">No se encontraron ofertas</p>
-                </div>
-              )
-            )}
+                offersAndUsers.length > 0 ? (
+                  offersAndUsers.map((data) => (
+                    <OfferCard
+                      key={data.offer.id}
+                      id={data.offer.id}
+                      price={-1}
+                      image={data.offer.imagesPath[0]}
+                      company={data.user.name}
+                      product={data.offer.description}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-muted-foreground">No se encontraron ofertas</p>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </section>
@@ -145,71 +180,73 @@ export default function SearchPage() {
               </h2>
               {!loading && (
                 <span className="text-sm text-muted-foreground">
-                  {type === "product" ? products.length : offers.length} resultados
+                  {type === "product" ? productsAndUsers.length : offersAndUsers.length} resultados
                 </span>
               )}
             </div>
 
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Cargando...</p>
-            </div>
-          </div>
-        ) : (
-          /* Carrusel para vista normal */
-          <div className="relative px-16">
-            <Carousel className="w-full">
-              <CarouselContent className="-ml-8 md:-ml-10">
-                {type === "product" ? (
-                  products.length > 0 ? (
-                    products.map((product) => (
-                                              <CarouselItem key={product.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                          <div className="p-6">
-                          <ProductCard
-                            id={product.id}
-                            price={product.price}
-                            image={product.imagesPath[0]}
-                            company={product.user_id.toString()}
-                            product={product.title}
-                            rating={product.rate}
-                          />
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p className="text-muted-foreground">Cargando...</p>
+                </div>
+              </div>
+            ) : (
+              /* Carrusel para vista normal */
+              <div className="relative px-16">
+                <Carousel className="w-full">
+                  <CarouselContent className="-ml-8 md:-ml-10">
+                    {type === "product" ? (
+                      productsAndUsers.length > 0 ? (
+                        productsAndUsers.map((data) => (
+                          <CarouselItem key={data.product.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                            <div className="p-6">
+                              <ProductCard
+                                key={data.product.id}
+                                id={data.product.id}
+                                price={data.product.price}
+                                image={data.product.imagesPath[0]}
+                                company={data.user.name}
+                                product={data.product.title}
+                                rating={data.product.rate}
+                                update_at={data.product.updated_at}
+                              />
+                            </div>
+                          </CarouselItem>
+                        ))
+                      ) : (
+                        <div className="col-span-full text-center py-12">
+                          <p className="text-muted-foreground">No se encontraron productos</p>
                         </div>
-                      </CarouselItem>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-12">
-                      <p className="text-muted-foreground">No se encontraron productos</p>
-                    </div>
-                  )
-                ) : (
-                  offers.length > 0 ? (
-                    offers.map((offer) => (
-                                              <CarouselItem key={offer.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                          <div className="p-6">
-                          <OfferCard
-                            id={offer.id}
-                            price={-1}
-                            image={offer.imagesPath[0]}
-                            company={offer.user_id.toString()}
-                            product={offer.description}
-                          />
+                      )
+                    ) : (
+                      offersAndUsers.length > 0 ? (
+                        offersAndUsers.map((data) => (
+                          <CarouselItem key={data.offer.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                            <div className="p-6">
+                              <OfferCard
+                                id={data.offer.id}
+                                price={-1}
+                                image={data.offer.imagesPath[0]}
+                                company={data.user.name}
+                                product={data.offer.description}
+                              />
+                            </div>
+                          </CarouselItem>
+                        ))
+                      ) : (
+                        <div className="col-span-full text-center py-12">
+                          <p className="text-muted-foreground">No se encontraron ofertas</p>
                         </div>
-                      </CarouselItem>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-12">
-                      <p className="text-muted-foreground">No se encontraron ofertas</p>
-                    </div>
-                  )
-                )}
-              </CarouselContent>
-              <CarouselPrevious className="left-0 bg-[#104912] hover:bg-[#104912]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
-              <CarouselNext className="right-0 bg-[#104912] hover:bg-[#104912]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
-            </Carousel>
-          </div>
-        )}
+                      )
+                    )}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-0 bg-[#104912] hover:bg-[#104912]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
+                  <CarouselNext className="right-0 bg-[#104912] hover:bg-[#104912]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
+                </Carousel>
+              </div>
+            )}
           </div>
         </section>
       )}
