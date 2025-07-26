@@ -12,27 +12,33 @@ interface OfferCardProps {
 
 export default function OfferCard({ id, price, company, product, image }: OfferCardProps) {
   return (
-    <Link href={`/offer/${id}`} className="w-40 h-56 rounded-xl shadow-md border border-gray-200 flex flex-col justify-between bg-white">
-      {/* Price badge */}
-      <div className="flex justify-center mt-2">
-        <div className="bg-primary text-primary-foreground rounded-full px-6 py-1 text-lg font-bold shadow-sm">
-          {price}
+    <Link href={`/offer/${id}`} className="group block w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
+      {/* Image container */}
+      <div className="relative bg-gray-50 p-4 flex items-center justify-center h-48 overflow-hidden flex-shrink-0">
+        {/* Price badge */}
+        <div className="absolute top-3 right-3 bg-[#558C2F] text-white rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
+          Oferta
         </div>
+        
+        {/* Product image */}
+        <img
+          src={image}
+          alt={product}
+          className="max-h-32 max-w-full object-contain rounded-lg group-hover:scale-105 transition-transform duration-300"
+        />
       </div>
-      {/* Image area */}
-      <div className="flex-1 flex items-center justify-center">
-          <img
-            src={image}
-            alt={product}
-            className="max-h-24 max-w-[80%] object-contain rounded-md shadow-sm"
-          />
-      </div>
-      {/* Company and product */}
-      <div className="bg-primary/80 px-2 py-1 text-center">
-        <span className="text-white font-bold text-sm tracking-wide uppercase">{company}</span>
-      </div>
-      <div className="bg-secondary/10 px-2 py-1 text-center">
-        <span className="text-secondary font-semibold text-xs tracking-wide uppercase">{product}</span>
+      
+      {/* Product info */}
+      <div className="p-4 bg-[#558C2F] text-white flex-1 flex flex-col justify-between min-h-[120px]">
+        {/* Company */}
+        <p className="text-sm font-bold uppercase tracking-wide mb-1 text-white">
+          {company}
+        </p>
+        
+        {/* Product name */}
+        <h3 className="font-bold text-white text-base mb-2 line-clamp-2 flex-1">
+          {product}
+        </h3>
       </div>
     </Link>
   );

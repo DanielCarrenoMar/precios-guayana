@@ -3,10 +3,12 @@ import OfferCard from "@/components/offerCard";
 import ProductCard from "@/components/productCard";
 import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/ui/search-bar";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Offer, Product } from "@/domain/interface";
 import { getLastOffers, getProductsByNameAndCategory } from "@/lib/supabase/repository";
 import { useEffect, useState } from "react";
 import OfferSection from "./components/offer_section";
+import HeroSection from "./components/hero-section";
 
 export default function SearchPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,6 +19,7 @@ export default function SearchPage() {
   const [sortOrder, ] = useState<("asc" | "desc")>("asc");
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState<"product" | "offer">("product");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -54,44 +57,47 @@ export default function SearchPage() {
   }, [type, searchText, category, sortBy, sortOrder]);
 
   return (
-    <>
-      <section>
-        <span className="flex gap-2 mb-4">
-          <Button
-            variant="outline"
-            onClick={() => {
-              setType("product");
-              setSearchText("");
-            }}
-          >
-            Buscar productos
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setType("offer");
-              setSearchText("");
-            }}
-          >
-            Buscar ofertas
-          </Button>
-        </span>
-        {type}
-        <SearchBar
-          placeholder="Buscar productos..."
+    <main>
+      {/* Hero Section */}
+      <HeroSection />
+
+      {/* Search Section */}
+      <section className="mb-8 flex justify-center -mt-8">
+        <div className="w-full max-w-2xl">
+                  <SearchBar
+          placeholder="Buscar productos y ofertas..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
+          onFocus={() => setIsSearchFocused(true)}
+          onBlur={() => {
+            if (!searchText) {
+              setIsSearchFocused(false);
+            }
+          }}
         />
+        </div>
       </section>
 
-      <OfferSection />
+      {/* Featured Offers Section - Solo mostrar si no hay búsqueda ni foco */}
+      {!searchText && !isSearchFocused && (
+        <section className="mb-8">
+          <OfferSection />
+        </section>
+      )}
 
-      {
-        !loading ?
-          <section>
-            <h1>Buscar</h1>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {type === "product" ?
+      {/* Results Section */}
+      {searchText || isSearchFocused ? (
+        /* Grid sin barra blanca para búsqueda */
+        <section className="px-4 pb-8">
+          {searchText && (
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-gray-800">Resultados de búsqueda</h2>
+            </div>
+          )}
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-25">
+            {type === "product" ? (
+              products.length > 0 ? (
                 products.map((product) => (
                   <ProductCard
                     key={product.id}
@@ -101,9 +107,15 @@ export default function SearchPage() {
                     company={product.user_id.toString()}
                     product={product.title}
                     rating={product.rate}
-
                   />
-                )) :
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-muted-foreground">No se encontraron productos</p>
+                </div>
+              )
+            ) : (
+              offers.length > 0 ? (
                 offers.map((offer) => (
                   <OfferCard
                     key={offer.id}
@@ -113,11 +125,94 @@ export default function SearchPage() {
                     company={offer.user_id.toString()}
                     product={offer.description}
                   />
-                ))}
-            </ul>
-          </section> :
-          <div>Cargando</div>
-      }
-    </>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-muted-foreground">No se encontraron ofertas</p>
+                </div>
+              )
+            )}
+            </div>
+          </div>
+        </section>
+      ) : (
+        /* Carrusel con barra blanca para vista normal */
+        <section className="px-4 pb-8">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold text-gray-800">
+                {type === "product" ? "Productos" : "Ofertas"}
+              </h2>
+              {!loading && (
+                <span className="text-sm text-muted-foreground">
+                  {type === "product" ? products.length : offers.length} resultados
+                </span>
+              )}
+            </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Cargando...</p>
+            </div>
+          </div>
+        ) : (
+          /* Carrusel para vista normal */
+          <div className="relative px-16">
+            <Carousel className="w-full">
+              <CarouselContent className="-ml-8 md:-ml-10">
+                {type === "product" ? (
+                  products.length > 0 ? (
+                    products.map((product) => (
+                                              <CarouselItem key={product.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                          <div className="p-6">
+                          <ProductCard
+                            id={product.id}
+                            price={product.price}
+                            image={product.imagesPath[0]}
+                            company={product.user_id.toString()}
+                            product={product.title}
+                            rating={product.rate}
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12">
+                      <p className="text-muted-foreground">No se encontraron productos</p>
+                    </div>
+                  )
+                ) : (
+                  offers.length > 0 ? (
+                    offers.map((offer) => (
+                                              <CarouselItem key={offer.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                          <div className="p-6">
+                          <OfferCard
+                            id={offer.id}
+                            price={-1}
+                            image={offer.imagesPath[0]}
+                            company={offer.user_id.toString()}
+                            product={offer.description}
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12">
+                      <p className="text-muted-foreground">No se encontraron ofertas</p>
+                    </div>
+                  )
+                )}
+              </CarouselContent>
+              <CarouselPrevious className="left-0 bg-[#104912] hover:bg-[#104912]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
+              <CarouselNext className="right-0 bg-[#104912] hover:bg-[#104912]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
+            </Carousel>
+          </div>
+        )}
+          </div>
+        </section>
+      )}
+    </main>
   );
 }

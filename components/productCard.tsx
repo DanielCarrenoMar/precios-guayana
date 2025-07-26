@@ -13,39 +13,51 @@ interface ProductCardProps {
 
 export default function ProductCard({ id, price, company, product, image, rating = 4 }: ProductCardProps) {
   return (
-    <Link href={`/product/${id}`} className="w-40 h-56 rounded-xl shadow-md border border-gray-200 flex flex-col justify-between bg-white">
-      {/* Price badge */}
-      <div className="flex justify-center mt-2">
-        <div className="bg-primary text-primary-foreground rounded-full px-6 py-1 text-lg font-bold shadow-sm">
-          {price}
+    <Link href={`/product/${id}`} className="group block w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
+      {/* Image container */}
+      <div className="relative bg-gray-50 p-4 flex items-center justify-center h-48 overflow-hidden">
+        {/* Price badge */}
+        <div className="absolute top-3 right-3 bg-[#558C2F] text-white rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
+          ${price}
         </div>
+        
+
+        
+        {/* Product image */}
+        <img
+          src={image}
+          alt={product}
+          className="max-h-32 max-w-full object-contain rounded-lg group-hover:scale-105 transition-transform duration-300"
+        />
       </div>
-      {/* Image area */}
-      <div className="flex-1 flex items-center justify-center">
-          <img
-            src={image}
-            alt={product}
-            className="max-h-24 max-w-[80%] object-contain rounded-md shadow-sm"
-          />
-      </div>
-      {/* Company and product */}
-      <div className="bg-primary/80 px-2 py-1 text-center">
-        <span className="text-white font-bold text-sm tracking-wide uppercase">{company}</span>
-      </div>
-      <div className="bg-secondary/10 px-2 py-1 text-center">
-        <span className="text-secondary font-semibold text-xs tracking-wide uppercase">{product}</span>
-      </div>
-      {/* Rating */}
-      <div className="flex justify-center items-center pb-2 pt-1">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i} className={
-            i < rating
-              ? "text-primary text-lg"
-              : "text-gray-300 text-lg"
-          }>
-            ★
-          </span>
-        ))}
+      
+      {/* Product info */}
+      <div className="p-4 bg-[#558C2F] text-white flex-1 flex flex-col justify-between min-h-[120px]">
+        {/* Company */}
+        <p className="text-sm font-bold uppercase tracking-wide mb-1 text-white">
+          {company}
+        </p>
+        
+        {/* Product name */}
+        <h3 className="font-bold text-white text-base mb-2 line-clamp-2 flex-1">
+          {product}
+        </h3>
+        
+        {/* Rating */}
+        <div className="flex items-center mt-auto">
+          <div className="flex">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <svg
+                key={i}
+                className={`w-4 h-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+          </div>
+          <span className="text-xs text-white ml-1">({rating}.0)</span>
+        </div>
       </div>
     </Link>
   );
