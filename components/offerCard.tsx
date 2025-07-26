@@ -13,7 +13,7 @@ export default function OfferCard({ id, company, product, image }: OfferCardProp
   return (
     <Link href={`/offer/${id}`} className="group w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
       <div className="relative bg-gray-50 p-4 flex items-center justify-center h-48 overflow-hidden flex-shrink-0">
-        <div className="absolute top-3 right-3 bg-secondary text-white rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
+        <div className="absolute top-3 right-3 bg-primary text-white rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
           Oferta
         </div>
         
@@ -24,7 +24,7 @@ export default function OfferCard({ id, company, product, image }: OfferCardProp
         />
       </div>
       
-      <div className="p-4 bg-secondary text-white flex-1 flex flex-col justify-between min-h-[120px]">
+      <div className="p-4 bg-primary text-white flex-1 flex flex-col justify-between min-h-[120px]">
         <p className="text-sm font-bold uppercase tracking-wide mb-1 text-white">
           {company}
         </p>
