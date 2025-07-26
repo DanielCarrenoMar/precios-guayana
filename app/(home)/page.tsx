@@ -2,8 +2,8 @@
 import ProductCard from "@/components/productCard";
 import SearchBar from "@/components/ui/search-bar";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Product, User } from "@/domain/interface";
-import { getProductsByNameAndCategory, getUserById } from "@/lib/supabase/repository";
+import { Product } from "@/domain/interface";
+import { getProductsByNameAndCategory } from "@/lib/supabase/repository";
 import { useEffect, useState } from "react";
 import OfferSection from "./components/offer_section";
 import HeroSection from "./components/hero-section";
