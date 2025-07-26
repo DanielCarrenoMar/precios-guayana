@@ -14,9 +14,6 @@ export default function HeroSection() {
             Compara precios de productos y ofertas en toda la región. 
             Ahorra tiempo y dinero con nuestra plataforma confiable.
           </p>
-          
-
-          
 
         </div>
       </div>
