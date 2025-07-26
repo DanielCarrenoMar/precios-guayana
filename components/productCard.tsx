@@ -1,6 +1,7 @@
 
 'use client';
 import { User } from "@/domain/interface";
+import { fetchDollarConversion } from "@/lib/dollarApi/dollarApi";
 import { getUserById } from "@/lib/supabase/repository";
 import { UUID } from "crypto";
 import Link from "next/link";
@@ -18,8 +19,8 @@ interface ProductCardProps {
 
 export default function ProductCard({ id, user_id, price, product, image, update_at, rating = 4 }: ProductCardProps) {
   const date = new Date(update_at);
-  const [user, setUser] = useState<User>();
 
+  const [user, setUser] = useState<User>();
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -37,7 +38,7 @@ export default function ProductCard({ id, user_id, price, product, image, update
     <Link href={`/product/${id}`} className="group w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
       <div className="relative bg-gray-50 p-4 flex items-center justify-center h-48 overflow-hidden">
         <div className="absolute top-3 right-3 bg-primary text-white rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
-          ${price}
+          {price}bs
         </div>
         <img
           src={image}
