@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+/*import { chromium } from 'playwright';
 import { Product, ProductPetition } from '@/domain/interface';
 import { insertProduct } from '../supabase/repository';
 
@@ -67,3 +67,4 @@ async function main() {
 }
 
 main().catch(console.error);
+*/

@@ -89,7 +89,7 @@ export default function CreatePage() {
       imagesPath: imageUrls,
     });
 
-    redirect("/profile");
+    redirect("/protected/profile");
   }
 
   return (

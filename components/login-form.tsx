@@ -39,7 +39,7 @@ export function LoginForm({
       });
       if (error) throw error;
 
-      router.push("/profile");
+      router.push("/protected/profile")
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {

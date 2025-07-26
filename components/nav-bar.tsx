@@ -111,7 +111,7 @@ const Navbar = async ({
                     <div className="flex gap-2">
                         {user ? (
                             <>
-                                <Link href="/profile">Hey, {user.email}!</Link>
+                                <Link href="protected/profile">Hey, {user.email}!</Link>
                                 <LogoutButton />
                             </>
                         ) : (
@@ -160,7 +160,7 @@ const Navbar = async ({
                                     <div className="flex flex-col gap-3">
                                         {user ? (
                                             <>
-                                                <Link href="/profile">Hey, {user.email}!</Link>
+                                                <Link href="protected/profile">Hey, {user.email}!</Link>
                                                 <LogoutButton />
                                             </>
                                         ) : (
