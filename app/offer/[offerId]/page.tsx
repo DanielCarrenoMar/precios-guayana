@@ -75,7 +75,7 @@ export default async function OfferPage({ params }: Props) {
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Oferta Especial</h1>
                 <div className="flex items-center space-x-4">
-                  <span className="text-2xl font-bold text-[#558C2F]">Oferta</span>
+                  <span className="text-2xl font-bold text-primary">Oferta</span>
                   <Link href={offer.url} target="_blank" rel="noopener noreferrer" className="text-primary underline text-sm">Ver Detalle</Link>
                 </div>
               </div>

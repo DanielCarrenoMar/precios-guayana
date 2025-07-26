@@ -76,7 +76,7 @@ export default async function ProductPage({ params }: Props){
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.title}</h1>
                 <div className="flex items-center space-x-4">
-                  <span className="text-4xl font-bold text-[#558C2F]">${product.price}</span>
+                  <span className="text-4xl font-bold text-primary">{product.price}bs</span>
                   <div className="flex items-center space-x-1">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
@@ -98,7 +98,7 @@ export default async function ProductPage({ params }: Props){
               {/* Category */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Categoría</h3>
-                <span className="inline-block bg-[#558C2F] text-white px-4 py-2 rounded-full text-sm font-medium">
+                <span className="inline-block bg-primary text-white px-4 py-2 rounded-full text-sm font-medium">
                   {product.category}
                 </span>
               </div>
@@ -111,7 +111,7 @@ export default async function ProductPage({ params }: Props){
 
               {/* Actions */}
               <div className="space-y-3 pt-4">
-                <Button className="w-full bg-[#558C2F] hover:bg-[#558C2F]/90 text-white py-3 text-lg font-semibold">
+                <Button className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-lg font-semibold">
                   Contactar Vendedor
                 </Button>
                 <Link href="/map">
@@ -126,7 +126,7 @@ export default async function ProductPage({ params }: Props){
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Información del Vendedor</h3>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-[#558C2F] rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
                       <span className="text-white font-bold text-lg">
                         {product.user_id.toString().charAt(0).toUpperCase()}
                       </span>
