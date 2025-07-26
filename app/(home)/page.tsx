@@ -1,22 +1,15 @@
 "use client";
-import OfferCard from "@/components/offerCard";
 import ProductCard from "@/components/productCard";
-import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/ui/search-bar";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Offer, Product, User } from "@/domain/interface";
-import { getLastOffers, getProductsByNameAndCategory, getUserById } from "@/lib/supabase/repository";
+import { Product, User } from "@/domain/interface";
+import { getProductsByNameAndCategory, getUserById } from "@/lib/supabase/repository";
 import { useEffect, useState } from "react";
 import OfferSection from "./components/offer_section";
 import HeroSection from "./components/hero-section";
 
-interface ProductAndUser {
-  product: Product,
-  user: User
-}
-
 export default function SearchPage() {
-  const [productsAndUsers, setProductsAndUsers] = useState<ProductAndUser[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchText, setSearchText] = useState("");
   const [category,] = useState("");
   const [sortBy,] = useState<("price" | "review")>("price");
@@ -36,21 +29,8 @@ export default function SearchPage() {
           }
         });
 
-        const productAndUserPromises = sortedProducts.map(async (product) => {
-          const user = await getUserById(product.user_id);
-          return {
-            product: product,
-            user: user,
-          };
-        });
-
-        Promise.all(productAndUserPromises).then(data => {
-          setProductsAndUsers(data)
-          setLoading(false)
-        }).catch((error) => {
-          console.error("Error fetching Users:", error);
-        });
-
+        setProducts(sortedProducts)
+        setLoading(false)
       }).catch((error) => {
         console.error("Error fetching products:", error);
       });
@@ -96,17 +76,17 @@ export default function SearchPage() {
           )}
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-25">
-              {productsAndUsers.length > 0 ? (
-                productsAndUsers.map((data) => (
+              {products.length > 0 ? (
+                products.map((product) => (
                   <ProductCard
-                    key={data.product.id}
-                    id={data.product.id}
-                    price={data.product.price}
-                    image={data.product.imagesPath[0]}
-                    company={data.user.name}
-                    product={data.product.title}
-                    rating={data.product.rate}
-                    update_at={data.product.updated_at}
+                    key={product.id}
+                    id={product.id}
+                    user_id={product.user_id}
+                    price={product.price}
+                    image={product.imagesPath[0]}
+                    product={product.title}
+                    rating={product.rate}
+                    update_at={product.updated_at}
                   />
                 ))
               ) : (
@@ -137,19 +117,19 @@ export default function SearchPage() {
                 <Carousel className="w-full">
                   <CarouselContent className="-ml-8 md:-ml-10">
                     {
-                      productsAndUsers.length > 0 ? (
-                        productsAndUsers.map((data) => (
-                          <CarouselItem key={data.product.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                      products.length > 0 ? (
+                        products.map((product) => (
+                          <CarouselItem key={product.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                             <div className="p-6">
                               <ProductCard
-                                key={data.product.id}
-                                id={data.product.id}
-                                price={data.product.price}
-                                image={data.product.imagesPath[0]}
-                                company={data.user.name}
-                                product={data.product.title}
-                                rating={data.product.rate}
-                                update_at={data.product.updated_at}
+                                key={product.id}
+                                id={product.id}
+                                user_id={product.user_id}
+                                price={product.price}
+                                image={product.imagesPath[0]}
+                                product={product.title}
+                                rating={product.rate}
+                                update_at={product.updated_at}
                               />
                             </div>
                           </CarouselItem>

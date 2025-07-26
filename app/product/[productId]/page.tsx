@@ -34,9 +34,9 @@ export default async function ProductPage({ params }: Props){
         {/* Breadcrumb */}
         <nav className="mb-8">
           <ol className="flex items-center space-x-2 text-sm text-gray-600">
-            <li><a href="/" className="hover:text-primary">Inicio</a></li>
+            <li><Link href="/" className="hover:text-primary">Inicio</Link></li>
             <li>/</li>
-            <li><a href="/" className="hover:text-primary">Productos</a></li>
+            <li><Link href="/" className="hover:text-primary">Ofertas</Link></li>
             <li>/</li>
             <li className="text-gray-900 font-medium">{product.title}</li>
           </ol>
@@ -151,11 +151,12 @@ export default async function ProductPage({ params }: Props){
                 <ProductCard
                   key={p.id}
                   id={p.id}
+                  user_id={p.user_id}
                   price={p.price}
                   image={p.imagesPath[0]}
-                  company={p.user_id.toString()}
                   product={p.title}
                   rating={p.rate}
+                  update_at={p.updated_at}
                 />
               ))
             ) : (

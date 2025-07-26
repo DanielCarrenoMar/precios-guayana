@@ -33,9 +33,9 @@ export default async function OfferPage({ params }: Props) {
         {/* Breadcrumb */}
         <nav className="mb-8">
           <ol className="flex items-center space-x-2 text-sm text-gray-600">
-            <li><a href="/" className="hover:text-primary">Inicio</a></li>
+            <li><Link href="/" className="hover:text-primary">Inicio</Link></li>
             <li>/</li>
-            <li><a href="/" className="hover:text-primary">Ofertas</a></li>
+            <li><Link href="/" className="hover:text-primary">Ofertas</Link></li>
             <li>/</li>
             <li className="text-gray-900 font-medium">Oferta #{offer.id}</li>
           </ol>
@@ -76,7 +76,7 @@ export default async function OfferPage({ params }: Props) {
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Oferta Especial</h1>
                 <div className="flex items-center space-x-4">
                   <span className="text-2xl font-bold text-[#558C2F]">Oferta</span>
-                  <a href={offer.url} target="_blank" rel="noopener noreferrer" className="text-primary underline text-sm">Ver Detalle</a>
+                  <Link href={offer.url} target="_blank" rel="noopener noreferrer" className="text-primary underline text-sm">Ver Detalle</Link>
                 </div>
               </div>
 
@@ -113,7 +113,6 @@ export default async function OfferPage({ params }: Props) {
                 <OfferCard
                   key={o.id}
                   id={o.id}
-                  price={-1}
                   image={o.imagesPath[0]}
                   company={o.user_id.toString()}
                   product={o.description}

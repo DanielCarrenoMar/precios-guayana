@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-
 export default function HeroSection() {
   return (
     <section className="bg-[#EBEBEB] py-16 mb-12">
