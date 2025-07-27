@@ -1,7 +1,6 @@
 
 'use client';
 import { User } from "@/domain/interface";
-import { fetchDollarConversion } from "@/lib/dollarApi/dollarApi";
 import { getUserById } from "@/lib/supabase/repository";
 import { UUID } from "crypto";
 import Link from "next/link";

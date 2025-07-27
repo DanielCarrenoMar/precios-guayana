@@ -1,5 +1,4 @@
 import { Menu } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
 
 import {
     Accordion,

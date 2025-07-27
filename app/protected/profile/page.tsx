@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { getOffersByUserId, getProductsByUserId, getUserById } from "@/lib/supabase/repository";
+import { getProductsByUserId, getUserById } from "@/lib/supabase/repository";
 import { UUID } from "crypto";
 import Image from "next/image";
 import { LinkIcon, MapPin } from "lucide-react";
@@ -20,8 +20,6 @@ export default async function ProfilePage() {
 
   const user = await getUserById(userId)
   const products = await getProductsByUserId(userId)
-  const offers = await getOffersByUserId(userId)
-
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-VE', {
