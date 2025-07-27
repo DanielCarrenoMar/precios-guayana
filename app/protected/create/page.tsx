@@ -7,6 +7,7 @@ import { UUID } from "crypto";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { Button } from "@/components/ui/button"; // Assuming this is your Shadcn UI Button
 
 interface LocationPickerMapProps {
   initialLat: number;
@@ -62,7 +63,7 @@ function LocationPickerMap({
             new L.Icon({
               iconUrl: "/marker-icon.png",
               iconSize: [24, 32],
-              iconAnchor: [12, 32], // Adjust anchor to center bottom of icon
+              iconAnchor: [12, 32],
               popupAnchor: [0, -32],
             })
           }
@@ -84,9 +85,8 @@ export default function CreatePage() {
   const [uploading, setUploading] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [userId, setUserId] = useState<UUID>();
-  const [useCurrentLocation, setUseCurrentLocation] = useState(false); // New state for checkbox
+  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
 
-  // Default coordinates for Guayana City, Bolívar, Venezuela
   const GUAYANA_CITY_LAT = 8.3546;
   const GUAYANA_CITY_LNG = -62.6416;
 
@@ -103,8 +103,6 @@ export default function CreatePage() {
     }
     fetchSession();
 
-    // Set initial map coordinates to default Guayana City
-    // This will be overridden if useCurrentLocation is checked and successful
     setLat(GUAYANA_CITY_LAT.toString());
     setLng(GUAYANA_CITY_LNG.toString());
   }, []);
@@ -136,7 +134,7 @@ export default function CreatePage() {
         );
       } else {
         setErrorText("Tu navegador no soporta la geolocalización.");
-        setUseCurrentLocation(false); // Uncheck if not supported
+        setUseCurrentLocation(false);
       }
     } else {
       // If "use current location" is unchecked, reset to default or allow map selection
@@ -196,7 +194,7 @@ export default function CreatePage() {
       return;
     }
 
-    insertProduct({
+    await insertProduct({ // Use await here
       user_id: userId,
       title: title,
       description: description,
@@ -211,48 +209,123 @@ export default function CreatePage() {
   }
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      <h1 className="text-xl font-bold mb-4">Crear Publicación</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          type="text"
-          placeholder="Título"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          className="border p-2 rounded"
-        />
-        <textarea
-          placeholder="Descripción"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-          className="border p-2 rounded"
-        />
-        <input
-          type="number"
-          placeholder="Precio"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          required
-          className="border p-2 rounded"
-        />
+    <div className="max-w-screen-lg mx-auto my-8 p-8 bg-primary-foreground rounded-2xl shadow-lg">
+      <h1 className="text-3xl font-bold text-center mb-6 text-primary">Crear Nueva Publicación</h1>
+      <div className="flex flex-col md:flex-row gap-8"> {/* Main container for two columns */}
+        {/* Left Column: Form Fields */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 md:w-1/2"> {/* Take half width on medium screens */}
+          <h2 className="text-xl font-semibold mb-2 text-gray-700">Detalles del Producto</h2>
+          <input
+            type="text"
+            placeholder="Título del Producto"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            className="border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          />
+          <textarea
+            placeholder="Descripción detallada del producto"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            rows={4}
+            className="border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500 resize-y"
+          />
+          <input
+            type="number"
+            placeholder="Precio (ej: 100.00)"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            required
+            min="0"
+            step="0.01"
+            className="border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          />
+          <input
+            type="text"
+            placeholder="Categoría (ej: Electrónica, Ropa)"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+            className="border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          />
+          <div className="flex flex-col gap-2">
+            <label htmlFor="image-upload" className="block text-xl font-semibold">Imágenes del Producto:</label>
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => {
+                if (e.target.files) {
+                  setImageFiles(Array.from(e.target.files));
+                } else {
+                  setImageFiles([]);
+                }
+              }}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 cursor-pointer"
+            />
+            <Button
+              type="button" // Important: Prevent form submission
+              variant="secondary"
+              onClick={handleImageUpload}
+              disabled={imageFiles.length === 0 || uploading}
+            >
+              {uploading ? "Subiendo imágenes..." : "Subir imágenes"}
+            </Button>
+          </div>
 
-        <div className="mb-4">
-          <label className="flex items-center gap-2 mb-2">
+          {imageUrls.length > 0 && (
+            <div className="mt-4">
+              <p className="font-semibold text-gray-700 mb-2">Imágenes Subidas:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {imageUrls.map((url, index) => (
+                  <div key={index} className="relative aspect-video rounded overflow-hidden">
+                    <img
+                      src={url}
+                      alt={`Imagen ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <p className="text-xs break-all truncate absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-1 rounded-b-md">
+                      {url.substring(url.lastIndexOf("/") + 1)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {errorText && <p className="text-red-500 mt-4 text-sm">{errorText}</p>}
+
+          <Button
+            type="submit"
+            variant="default"
+            disabled={uploading || imageUrls.length === 0 || !userId || !lat || !lng}
+            className="text-xl py-6"
+          >
+            Crear Publicación
+          </Button>
+        </form>
+
+        {/* Right Column: Location Picker Map */}
+        <div className="md:w-1/2 flex flex-col gap-4"> {/* Take half width on medium screens */}
+          <h2 className="text-xl font-semibold mb-2 text-gray-700">Ubicación del Producto</h2>
+          <div className="flex items-center gap-2 mb-2">
             <input
               type="checkbox"
+              id="useCurrentLocation"
               checked={useCurrentLocation}
               onChange={(e) => setUseCurrentLocation(e.target.checked)}
-              className="form-checkbox"
+              className="form-checkbox h-5 w-5 text-blue-600 rounded"
             />
-            <span>Usar mi ubicación actual</span>
-          </label>
+            <label htmlFor="useCurrentLocation" className="text-gray-700 font-medium cursor-pointer">
+              Usar mi ubicación actual
+            </label>
+          </div>
 
           {!useCurrentLocation && (
             <>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Selecciona la ubicación en el mapa:
+                O selecciona la ubicación en el mapa:
               </label>
               <LocationPickerMap
                 initialLat={parseFloat(lat || GUAYANA_CITY_LAT.toString())}
@@ -263,68 +336,12 @@ export default function CreatePage() {
           )}
 
           {lat && lng && (
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 p-2 bg-gray-50 rounded-md">
               Ubicación seleccionada: Latitud: **{lat}**, Longitud: **{lng}**
             </p>
           )}
         </div>
-
-        <input
-          type="text"
-          placeholder="Categoría"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-          className="border p-2 rounded"
-        />
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={(e) => {
-            if (e.target.files) {
-              setImageFiles(Array.from(e.target.files));
-            } else {
-              setImageFiles([]);
-            }
-          }}
-          className="border p-2 rounded"
-        />
-        <button
-          type="button"
-          onClick={handleImageUpload}
-          disabled={imageFiles.length === 0 || uploading}
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
-        >
-          {uploading ? "Subiendo imágenes..." : "Subir imágenes"}
-        </button>
-        {imageUrls.length > 0 && (
-          <div className="mt-2">
-            <p className="font-semibold mb-2">Imágenes Subidas:</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {imageUrls.map((url, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={url}
-                    alt={`Imagen ${index + 1}`}
-                    className="w-full h-24 object-cover rounded"
-                  />
-                  <p className="text-xs break-all truncate absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-1 rounded-b">
-                    URL: {url.substring(url.lastIndexOf("/") + 1)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        {errorText && <p className="text-red-500">{errorText}</p>}
-        <button
-          type="submit"
-          className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-        >
-          Crear publicación
-        </button>
-      </form>
+      </div>
     </div>
   );
 }
