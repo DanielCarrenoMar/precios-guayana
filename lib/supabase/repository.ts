@@ -271,6 +271,19 @@ export async function insertReview(review: Review) {
 
 // Users
 
+export async function getAllUser() {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('user')
+    .select()
+
+  if (error) throw error
+
+  let users = data as User[]
+  return users;
+}
+
 export async function getUserById(id: UUID): Promise<User> {
   const supabase = await createClient()
   const { data, error } = await supabase
