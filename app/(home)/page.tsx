@@ -15,7 +15,6 @@ export default function SearchPage() {
   const [sortBy,] = useState<("price" | "review")>("price");
   const [sortOrder,] = useState<("asc" | "desc")>("asc");
   const [loading, setLoading] = useState(true);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -49,24 +48,18 @@ export default function SearchPage() {
             placeholder="Buscar productos y ofertas..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            onFocus={() => setIsSearchFocused(true)}
-            onBlur={() => {
-              if (!searchText) {
-                setIsSearchFocused(false);
-              }
-            }}
           />
         </div>
       </section>
 
-      {!searchText && !isSearchFocused && (
+      {!searchText && (
         <section className="mb-8">
           <OfferSection />
         </section>
       )}
 
       {/* Results Section */}
-      {searchText || isSearchFocused ? (
+      {searchText ? (
         /* Grid sin barra blanca para búsqueda */
         <section className="px-4 pb-8">
           {searchText && (
@@ -141,8 +134,8 @@ export default function SearchPage() {
                       )
                     }
                   </CarouselContent>
-                  <CarouselPrevious className="left-0 bg-[#104912] hover:bg-[#104912]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
-                  <CarouselNext className="right-0 bg-[#104912] hover:bg-[#104912]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
+                  <CarouselPrevious className="left-0 bg-secondary hover:bg-secondary/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
+                  <CarouselNext className="right-0 bg-secondary hover:bg-secondary/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 w-12 h-12" />
                 </Carousel>
               </div>
             )}
