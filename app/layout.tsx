@@ -3,6 +3,8 @@ import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Navbar from "@/components/nav-bar";
+import { createClient } from "@/lib/supabase/server";
+import { ReactNode } from "react";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -20,25 +22,24 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  let userProfile = null;
+  if (data?.claims?.sub) {
+    const { data: profile } = await supabase
+      .from("user")
+      .select("name")
+      .eq("id", data.claims.sub)
+      .single();
+    userProfile = profile;
+  }
+
   return (
-    <html lang="es" suppressHydrationWarning className="h-full w-full">
-      <body className={`${geistSans.className} antialiased h-full w-full`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Navbar />
-          <div className="pt-20 h-full w-full">
-            {children}
-          </div>
-        </ThemeProvider>
+    <html lang="es">
+      <body>
+        <Navbar user={userProfile} />
+        {children}
       </body>
     </html>
   );

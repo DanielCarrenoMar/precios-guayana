@@ -52,6 +52,7 @@ interface NavbarProps {
             url: string;
         };
     };
+    user?: { name?: string } | null;
 }
 
 const Navbar = async ({
@@ -80,12 +81,8 @@ const Navbar = async ({
         login: { title: "Iniciar sesión", url: "/auth/login" },
         signup: { title: "Registrarse", url: "/auth/sign-up" },
     },
+    user,
 }: NavbarProps) => {
-    const supabase = await createClient();
-
-    const { data } = await supabase.auth.getClaims();
-
-    const user = data?.claims;
 
     return (
         <section className="py-4 fixed top-0 left-0 w-full z-50 bg-background border-b flex justify-center">
@@ -111,7 +108,7 @@ const Navbar = async ({
                     <div className="flex gap-2">
                         {user ? (
                             <>
-                                <Link href="protected/profile">Hey, {user.email}!</Link>
+                                <Link href="protected/profile">Hey, {user.name}!</Link>
                                 <LogoutButton />
                             </>
                         ) : (
@@ -160,7 +157,7 @@ const Navbar = async ({
                                     <div className="flex flex-col gap-3">
                                         {user ? (
                                             <>
-                                                <Link href="protected/profile">Hey, {user.email}!</Link>
+                                                <Link href="protected/profile">Hey, {user.name}!</Link>
                                                 <LogoutButton />
                                             </>
                                         ) : (
