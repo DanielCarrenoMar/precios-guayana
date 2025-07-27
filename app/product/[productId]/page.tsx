@@ -70,9 +70,7 @@ export default async function ProductPage({ params }: Props){
               )}
             </div>
 
-            {/* Product Info */}
             <div className="space-y-6">
-              {/* Title and Price */}
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.title}</h1>
                 <div className="flex items-center space-x-4">
@@ -103,17 +101,11 @@ export default async function ProductPage({ params }: Props){
                 </span>
               </div>
 
-              {/* Location */}
-              <div className="flex items-center space-x-2 text-gray-600">
-                <MapPin className="w-5 h-5" />
-                <span>Ubicación: Ciudad Guayana, Venezuela</span>
-              </div>
-
               {/* Actions */}
               {product.latitude && product.longitude && <div className="space-y-3 pt-4">
                 <Link href={`/map?lat=${product.latitude}&lng=${product.longitude}`}>
                   <Button variant="link" className="w-full py-3 text-lg">
-                    Ver en Mapa
+                    <MapPin className="w-5 h-5" /> Ver en Mapa
                   </Button>
                 </Link>
               </div>}
