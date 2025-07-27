@@ -42,7 +42,7 @@ export default function SearchPage() {
     <main>
       <HeroSection />
 
-      <section className="mb-8 flex justify-center -mt-8">
+      <section className="mb-16 flex justify-center -mt-8">
         <div className="w-full max-w-2xl">
           <SearchBar
             placeholder="Buscar productos y ofertas..."
