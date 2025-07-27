@@ -69,11 +69,11 @@ const Navbar = async ({
         },
         {
             title: "Perfil",
-            url: "protected/profile",
+            url: "/protected/profile",
         },
         {
             title: "Subir producto",
-            url: "protected/create",
+            url: "/protected/create",
         },
     ],
     auth = {
