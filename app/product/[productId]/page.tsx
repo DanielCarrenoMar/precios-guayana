@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: Props){
   return (
     <div className="min-h-screen bg-[#EBEBEB] py-8">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Breadcrumb */}
+
         <nav className="mb-8">
           <ol className="flex items-center space-x-2 text-sm text-gray-600">
             <li><Link href="/" className="hover:text-primary">Inicio</Link></li>
@@ -44,10 +44,9 @@ export default async function ProductPage({ params }: Props){
           </ol>
         </nav>
 
-        {/* Product Details */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
-            {/* Product Image */}
+
             <div className="space-y-4">
               <div className="bg-gray-50 rounded-xl p-8 flex items-center justify-center h-96">
                 <img
@@ -56,7 +55,7 @@ export default async function ProductPage({ params }: Props){
                   className="max-h-80 max-w-full object-contain rounded-lg"
                 />
               </div>
-              {/* Additional Images (if any) */}
+
               {product.imagesPath.length > 1 && (
                 <div className="flex space-x-2">
                   {product.imagesPath.slice(1, 4).map((image, index) => (
@@ -89,13 +88,11 @@ export default async function ProductPage({ params }: Props){
                 </div>
               </div>
 
-              {/* Description */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Descripción</h3>
                 <p className="text-gray-600 leading-relaxed">{product.description}</p>
               </div>
 
-              {/* Category */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Categoría</h3>
                 <span className="inline-block bg-primary text-white px-4 py-2 rounded-full text-sm font-medium">
@@ -103,16 +100,14 @@ export default async function ProductPage({ params }: Props){
                 </span>
               </div>
 
-              {/* Actions */}
               {product.latitude && product.longitude && <div className="space-y-3 pt-4">
                 <Link href={`/map?lat=${product.latitude}&lng=${product.longitude}`}>
-                  <Button variant="link" className="w-full py-3 text-lg">
+                  <Button variant="default" className="w-full py-3 text-lg">
                     <MapPin className="w-5 h-5" /> Ver en Mapa
                   </Button>
                 </Link>
               </div>}
 
-              {/* Seller Info */}
               <div className="border-t pt-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Información del Vendedor</h3>
                 <div className="bg-gray-50 rounded-lg p-4">
@@ -122,10 +117,10 @@ export default async function ProductPage({ params }: Props){
                         {user.name.toString().charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <div>
+                    <Link href={`/user/${user.id}`}>
                       <p className="font-medium text-gray-900">{user.name}</p>
                       <p className="text-sm text-gray-600">Miembro desde {date.getFullYear()}</p>
-                    </div>
+                    </Link>
                   </div>
                 </div>
               </div>
