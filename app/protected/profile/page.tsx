@@ -72,7 +72,7 @@ export default async function ProfilePage() {
           </div>
         </header>
 
-        <main className="mt-12">
+        <main className="mt-12 p-6 rounded-xl bg-primary-foreground">
           <span className="flex gap-4 items-center mb-6">
             <h2 className="text-4xl font-bold">Tus Productos</h2>
               <Button variant="default" >Subir producto</Button>

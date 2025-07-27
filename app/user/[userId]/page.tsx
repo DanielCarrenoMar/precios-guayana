@@ -72,7 +72,7 @@ export default async function UserPage({ params }: Props) {
                     </div>
                 </header>
 
-                <main className="mt-12">
+                <main className="mt-12 p-6 rounded-xl bg-primary-foreground">
                     <h2 className="text-3xl font-bold mb-6">Productos</h2>
                     {products.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -94,7 +94,7 @@ export default async function UserPage({ params }: Props) {
                     )}
                 </main>
 
-                <section className="mt-12">
+                <section className="mt-12 p-6 rounded-xl bg-primary-foreground">
                     <h2 className="text-3xl font-bold mb-6">Ofertas Asociadas</h2>
                     {offers.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
