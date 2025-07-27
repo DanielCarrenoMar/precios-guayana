@@ -233,7 +233,7 @@ export default function CreatePage() {
           />
           <input
             type="number"
-            placeholder="Precio (ej: 100.00)"
+            placeholder="Precio en dolares (ej: 10.00$)"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             required

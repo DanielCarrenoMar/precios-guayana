@@ -75,7 +75,7 @@ export default async function ProductPage({ params }: Props){
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.title}</h1>
                 <div className="flex items-center space-x-4">
-                  <span className="text-4xl font-bold text-primary">{product.price}bs</span>
+                  <span className="text-4xl font-bold text-primary">{product.price}$</span>
                   <div className="flex items-center space-x-1">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star

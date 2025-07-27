@@ -37,7 +37,7 @@ export default function ProductCard({ id, user_id, price, product, image, update
     <Link href={`/product/${id}`} className="group max-w-64 bg-primary-foreground rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-86">
       <div className="relative bg-gray-50 p-4 flex items-center justify-center h-48 overflow-hidden">
         <div className="absolute top-3 right-3 bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
-          {price}bs
+          {price}$
         </div>
         <img
           src={image}
