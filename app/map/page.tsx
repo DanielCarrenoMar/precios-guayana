@@ -41,13 +41,14 @@ export default function MapPage() {
 
     async function fetchLocationUsers() {
       const data = await (await getAllUser()).filter(user => user.latitude && user.longitude);
+      console.log(data)
       setUsers(data);
     }
 
     if (showType == "businesses") fetchLocationUsers()
     else fetchLocationProducts();
     
-  }, []);
+  }, [showType]);
 
   return (
     <div className='w-full h-full'>

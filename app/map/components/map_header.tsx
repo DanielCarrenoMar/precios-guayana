@@ -10,7 +10,7 @@ interface Props {
 type ActiveTab = 'businesses' | 'products';
 
 export default function MapHeader({ onShowBusinesses, onShowProducts }: Props) {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('businesses');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('products');
 
   const handleShowBusinesses = () => {
     setActiveTab('businesses');
