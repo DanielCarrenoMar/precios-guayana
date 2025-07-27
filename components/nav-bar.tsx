@@ -88,7 +88,7 @@ const Navbar = async ({
     const user = data?.claims;
 
     return (
-        <section className="py-4 fixed top-0 left-0 w-full z-50 bg-background border-b">
+        <section className="py-4 fixed top-0 left-0 w-full z-50 bg-background border-b flex justify-center">
             <div className="container">
                 {/* Desktop Menu */}
                 <nav className="hidden justify-between lg:flex">
