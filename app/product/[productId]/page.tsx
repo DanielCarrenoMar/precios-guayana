@@ -1,4 +1,4 @@
-import { getProductById, getProductsByNameAndCategory } from '@/lib/supabase/repository';
+import { getProductById, getProductsByNameAndCategory, getUserById } from '@/lib/supabase/repository';
 import { notFound } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Star, MapPin } from 'lucide-react';
@@ -18,6 +18,8 @@ export default async function ProductPage({ params }: Props){
   }
 
   const product = await getProductById(productIdNum);
+  const user = await getUserById(product.user_id)
+  const date = new Date(user.created_at);
 
   if (!product) {
     notFound();
@@ -26,7 +28,7 @@ export default async function ProductPage({ params }: Props){
   // Obtener productos relacionados por categoría (excluyendo el actual)
   const relatedProducts = (await getProductsByNameAndCategory('', product.category))
     .filter(p => p.id !== product.id)
-    .slice(0, 8);
+    .slice(0, 8)
 
   return (
     <div className="min-h-screen bg-[#EBEBEB] py-8">
@@ -117,12 +119,12 @@ export default async function ProductPage({ params }: Props){
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
                       <span className="text-white font-bold text-lg">
-                        {product.user_id.toString().charAt(0).toUpperCase()}
+                        {user.name.toString().charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">Vendedor</p>
-                      <p className="text-sm text-gray-600">Miembro desde 2024</p>
+                      <p className="font-medium text-gray-900">{user.name}</p>
+                      <p className="text-sm text-gray-600">Miembro desde {date.getFullYear()}</p>
                     </div>
                   </div>
                 </div>
