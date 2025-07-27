@@ -35,9 +35,9 @@ export default function ProductCard({ id, user_id, price, product, image, update
   }, [user_id]);
 
   return (
-    <Link href={`/product/${id}`} className="group max-w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
+    <Link href={`/product/${id}`} className="group max-w-64 bg-primary-foreground rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-86">
       <div className="relative bg-gray-50 p-4 flex items-center justify-center h-48 overflow-hidden">
-        <div className="absolute top-3 right-3 bg-primary text-white rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
+        <div className="absolute top-3 right-3 bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
           {price}bs
         </div>
         <img
@@ -48,20 +48,23 @@ export default function ProductCard({ id, user_id, price, product, image, update
       </div>
 
       {/* Product info */}
-      <div className="p-4 bg-primary text-white flex-1 flex flex-col justify-between min-h-12">
-        <p className="text-sm font-bold uppercase tracking-wide mb-1 text-white">
+      <div className="p-4 bg-primary text-primary-foreground flex-1 flex flex-col justify-between min-h-12">
+        <h4 className="text-xs font-bold uppercase tracking-wide mb-1 text-primary-foreground">
           {user?.name}
-        </p>
+        </h4>
 
-        <h3 className="font-bold text-white text-base mb-2 line-clamp-2 flex-1">
+        <div>
+          <h3 className="font-bold text-primary-foreground text-base mb-2 line-clamp-2 flex-1">
           {product}
         </h3>
-        <h4 className="font-bold text-white text-xs mb-2 line-clamp-2 flex-1">
+        <h4 className="font-bold text-primary-foreground text-xs mb-2 line-clamp-2 flex-1">
           Actualizado:&nbsp;
           {new Intl.DateTimeFormat('es-ES', {
             dateStyle: 'full',
           }).format(date)}
         </h4>
+        </div>
+        
         <div className="flex items-center mt-auto">
           <div className="flex">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -70,7 +73,7 @@ export default function ProductCard({ id, user_id, price, product, image, update
               </svg>
             ))}
           </div>
-          <span className="text-xs text-white ml-1">({rating}.0)</span>
+          <span className="text-xs text-primary-foreground ml-1">({rating}.0)</span>
         </div>
       </div>
     </Link>

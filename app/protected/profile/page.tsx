@@ -5,7 +5,6 @@ import Image from "next/image";
 import { LinkIcon, MapPin } from "lucide-react";
 import Link from "next/link";
 import ProductCard from "@/components/productCard";
-import OfferCard from "@/components/offerCard";
 import { Button } from "@/components/ui/button";
 
 export default async function ProfilePage() {

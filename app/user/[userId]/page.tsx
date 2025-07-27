@@ -104,7 +104,7 @@ export default async function UserPage({ params }: Props) {
                                     id={offer.id}
                                     company="a"
                                     image={offer.imagesPath[0]}
-                                    product={offer.description}
+                                    description={offer.description}
                                 />
                             ))}
                         </div>

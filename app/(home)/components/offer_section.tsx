@@ -57,7 +57,7 @@ export default function OfferSection() {
                                                 id={data.offer.id}
                                                 image={data.offer.imagesPath[0]}
                                                 company={data.user.name}
-                                                product={data.offer.description}
+                                                description={data.offer.description}
                                             />
                                         </div>
                                     </CarouselItem>

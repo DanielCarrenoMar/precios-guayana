@@ -111,7 +111,7 @@ export default async function OfferPage({ params }: Props) {
                   id={o.id}
                   image={o.imagesPath[0]}
                   company={o.user_id.toString()}
-                  product={o.description}
+                  description={o.description}
                 />
               ))
             ) : (
