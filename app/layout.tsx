@@ -5,6 +5,8 @@ import "./globals.css";
 import Navbar from "@/components/nav-bar";
 import { createClient } from "@/lib/supabase/server";
 import { ReactNode } from "react";
+import { getUserById } from "@/lib/supabase/repository";
+import { UUID } from "crypto";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -27,12 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { data } = await supabase.auth.getClaims();
   let userProfile = null;
   if (data?.claims?.sub) {
-    const { data: profile } = await supabase
-      .from("user")
-      .select("name")
-      .eq("id", data.claims.sub)
-      .single();
-    userProfile = profile;
+    userProfile = await getUserById(data.claims.sub as UUID);
   }
 
   return (

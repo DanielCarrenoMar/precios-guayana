@@ -1,78 +1,101 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import type { User } from "@/domain/interface";
+import { createClient } from "@/lib/supabase/server";
+import { getOffersByUserId, getProductsByUserId, getUserById } from "@/lib/supabase/repository";
+import { UUID } from "crypto";
+import Image from "next/image";
+import { LinkIcon, MapPin } from "lucide-react";
+import Link from "next/link";
+import ProductCard from "@/components/productCard";
+import OfferCard from "@/components/offerCard";
+import { Button } from "@/components/ui/button";
 
-export default function ProfilePage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+export default async function ProfilePage() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const userClaim = data?.claims;
+  if (!userClaim) {
+    return (
+      <div>error</div>
+    )
+  }
+  const userId = userClaim?.sub as UUID
 
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(async ({ data, error }) => {
-      if (error || !data?.user) {
-        router.replace("/auth/login");
-      } else {
-        const { data: profile, error: profileError } = await supabase
-          .from("user")
-          .select("*")
-          .eq("id", data.user.id)
-          .single();
+  const user = await getUserById(userId)
+  const products = await getProductsByUserId(userId)
+  const offers = await getOffersByUserId(userId)
 
-        if (profileError || !profile) {
-          setUser(null);
-        } else {
-          setUser(profile);
-        }
-      }
-      setLoading(false);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-VE', {
+      year: 'numeric',
+      month: 'long',
     });
-  }, [router]);
-
-  const extra = {
-    name: user?.name || "",
-    bio: user?.bios || "",
-    location: user?.latitude && user?.longitude
-      ? `${user.latitude}, ${user.longitude}`
-      : "",
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <span className="text-gray-500">Cargando perfil...</span>
-      </div>
-    );
-  }
-
-  if (!user) return null;
-
   return (
-    <div className="min-h-screen bg-[#ededed] flex flex-col items-center py-10">
-      <div className="relative w-full max-w-2xl rounded-xl shadow bg-white overflow-hidden">
-        <div className="h-36 bg-gradient-to-b from-green-700 to-green-500 w-full" />
+    <div className=" text-primary min-h-screen font-sans p-4 sm:p-6 md:p-8">
+      <div className="max-w-7xl mx-auto">
 
-        <div className="absolute left-1/2 -translate-x-1/2 -top-10">
-          <div className="w-40 h-40 rounded-full bg-white shadow flex items-center justify-center">
-            <svg width="110" height="110" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="8" r="5" stroke="#558C2F" strokeWidth="2" />
-              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#558C2F" strokeWidth="2" />
-            </svg>
+        <header className="bg-primary-foreground p-6 rounded-xl flex flex-col sm:flex-row items-center gap-6">
+          <div className="flex-shrink-0">
+            {user.imageProfilePath ?
+              <Image
+                src={user.imageProfilePath}
+                alt={`Foto de perfil de ${user.name}`}
+                width={128}
+                height={128}
+                className="rounded-full object-cover border-4 border-gray-700"
+              /> :
+              <div className="size-32 bg-primary text-4xl font-bold text-primary-foreground rounded-full flex justify-center items-center">
+                {user.name.toUpperCase()[0]}
+              </div>
+            }
           </div>
-        </div>
-        <div className="pt-24 pb-16 px-8 flex flex-col gap-6 items-center w-full">
-          <div className="font-bold text-4xl text-gray-900 text-center">{extra.name}</div>
-          <div className="text-2xl text-gray-700 mb-6 text-center">{extra.bio}</div>
-          <div className="flex items-center gap-3 text-green-700 mt-8">
-            <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
-              <path d="M12 21s-6-5.686-6-10a6 6 0 1112 0c0 4.314-6 10-6 10z" stroke="#558C2F" strokeWidth="2" />
-              <circle cx="12" cy="11" r="2" stroke="#558C2F" strokeWidth="2" />
-            </svg>
-            <span className="text-xl text-gray-700">{extra.location}</span>
+          <div className="text-center sm:text-left">
+            <h1 className="text-4xl font-bold">{user.name}</h1>
+            <p className="text-primary/80 mt-2 max-w-2xl">{user.bios}</p>
+
+            <div className="flex items-center justify-center sm:justify-start gap-6 mt-4 text-sm text-gray-400">
+              {user.contact &&
+                <span>
+                  <LinkIcon size={16} />
+                  <h3>{user.contact}</h3>
+                </span>
+              }
+              {user.latitude && user.longitude &&
+                <Link href={`/map?lat=${user.latitude}&lng=${user.longitude}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                  <MapPin size={16} />
+                  <span>Ver en el mapa</span>
+                </Link>
+              }
+            </div>
+            <p className="text-xs text-gray-500 mt-3">Miembro desde {formatDate(user.created_at)}</p>
           </div>
-        </div>
+        </header>
+
+        <main className="mt-12">
+          <span className="flex gap-4 items-center mb-6">
+            <h2 className="text-4xl font-bold">Tus Productos</h2>
+              <Button variant="default" >Subir producto</Button>
+          </span>
+          {products.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  user_id={product.user_id}
+                  price={product.price}
+                  image={product.imagesPath[0]}
+                  product={product.title}
+                  rating={product.rate}
+                  update_at={product.updated_at}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400">Este usuario aún no ha subido productos.</p>
+          )}
+        </main>
       </div>
     </div>
   );

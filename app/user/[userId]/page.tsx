@@ -35,12 +35,11 @@ export default async function UserPage({ params }: Props) {
         <div className=" text-primary min-h-screen font-sans p-4 sm:p-6 md:p-8">
             <div className="max-w-7xl mx-auto">
 
-                {/* SECCIÓN PRINCIPAL DE INFORMACIÓN DEL USUARIO */}
                 <header className="bg-primary-foreground p-6 rounded-xl flex flex-col sm:flex-row items-center gap-6">
                     <div className="flex-shrink-0">
                         {user.imageProfilePath ?
                             <Image
-                                src={user.imageProfilePath} // Ruta a un avatar por defecto
+                                src={user.imageProfilePath}
                                 alt={`Foto de perfil de ${user.name}`}
                                 width={128}
                                 height={128}
