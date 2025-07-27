@@ -11,7 +11,7 @@ interface OfferCardProps {
 
 export default function OfferCard({ id, company, product, image }: OfferCardProps) {
   return (
-    <Link href={`/offer/${id}`} className="group w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
+    <Link href={`/offer/${id}`} className="group max-w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
       <div className="relative bg-gray-50 p-4 flex items-center justify-center h-48 overflow-hidden flex-shrink-0">
         <div className="absolute top-3 right-3 bg-primary text-white rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
           Oferta

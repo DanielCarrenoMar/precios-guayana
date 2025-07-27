@@ -107,7 +107,7 @@ export default function SearchPage() {
               </div>
             ) : (
               /* Carrusel para vista normal */
-              <div className="relative px-16">
+              <div className="relative">
                 <Carousel className="w-full">
                   <CarouselContent className="-ml-8 md:-ml-10">
                     {

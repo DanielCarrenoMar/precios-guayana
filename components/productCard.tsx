@@ -35,7 +35,7 @@ export default function ProductCard({ id, user_id, price, product, image, update
   }, [user_id]);
 
   return (
-    <Link href={`/product/${id}`} className="group w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
+    <Link href={`/product/${id}`} className="group max-w-64 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col h-80">
       <div className="relative bg-gray-50 p-4 flex items-center justify-center h-48 overflow-hidden">
         <div className="absolute top-3 right-3 bg-primary text-white rounded-full px-3 py-1 text-sm font-bold shadow-md z-10">
           {price}bs
@@ -48,7 +48,7 @@ export default function ProductCard({ id, user_id, price, product, image, update
       </div>
 
       {/* Product info */}
-      <div className="p-4 bg-primary text-white flex-1 flex flex-col justify-between min-h-[120px]">
+      <div className="p-4 bg-primary text-white flex-1 flex flex-col justify-between min-h-12">
         <p className="text-sm font-bold uppercase tracking-wide mb-1 text-white">
           {user?.name}
         </p>

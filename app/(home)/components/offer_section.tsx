@@ -47,7 +47,7 @@ export default function OfferSection() {
                 </div>
 
                 {!loading ? (
-                    <div className="relative px-16">
+                    <div className="relative">
                         <Carousel className="w-full">
                             <CarouselContent className="-ml-8 md:-ml-10">
                                 {offersAndUsers.map((data) => (
