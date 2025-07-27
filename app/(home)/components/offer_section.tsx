@@ -52,7 +52,7 @@ export default function OfferSection() {
                             <CarouselContent className="-ml-8 md:-ml-10">
                                 {offersAndUsers.map((data) => (
                                     <CarouselItem key={data.offer.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                                        <div className="p-2">
+                                        <div className="p-6">
                                             <OfferCard
                                                 id={data.offer.id}
                                                 image={data.offer.imagesPath[0]}

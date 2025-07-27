@@ -96,6 +96,7 @@ export default function SearchPage() {
         /* Carrusel con barra blanca para vista normal */
         <section className="px-4 pb-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-gray-800">Productos</h2>
 
             {loading ? (
               <div className="flex items-center justify-center py-12">
