@@ -13,7 +13,6 @@ export default function SearchPage() {
   const [searchText, setSearchText] = useState("");
   const [category,] = useState("");
   const [sortBy,] = useState<("price" | "review")>("price");
-  const [sortOrder,] = useState<("asc" | "desc")>("asc");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,11 +20,7 @@ export default function SearchPage() {
     function fetchProductsAndUsers() {
       getProductsByNameAndCategory(searchText, "").then((data) => {
         const sortedProducts = data.sort((a, b) => {
-          if (sortBy === "price") {
-            return sortOrder === "asc" ? a.price - b.price : b.price - a.price;
-          } else {
-            return sortOrder === "asc" ? a.rate - b.rate : b.rate - a.rate;
-          }
+          return b.rate - a.rate
         });
 
         setProducts(sortedProducts)
@@ -36,7 +31,7 @@ export default function SearchPage() {
     }
 
     fetchProductsAndUsers();
-  }, [searchText, category, sortBy, sortOrder]);
+  }, [searchText, category, sortBy]);
 
   return (
     <main>
@@ -96,7 +91,7 @@ export default function SearchPage() {
         /* Carrusel con barra blanca para vista normal */
         <section className="px-4 pb-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold text-gray-800">Productos</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Productos Destacados</h2>
 
             {loading ? (
               <div className="flex items-center justify-center py-12">
@@ -112,7 +107,7 @@ export default function SearchPage() {
                   <CarouselContent className="-ml-8 md:-ml-10">
                     {
                       products.length > 0 ? (
-                        products.map((product) => (
+                        products.slice(0,10).map((product) => (
                           <CarouselItem key={product.id} className="pl-4 md:pl-6 basis-1/1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                             <div className="p-6">
                               <ProductCard
