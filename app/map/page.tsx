@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-leaflet';
-import ProductMap from './components/product_map';
 
 const DynamicProductMap = dynamic(
   () => import('./components/product_map'), {
@@ -26,8 +25,10 @@ export default function MapPage() {
   }, [])
 
   return (
-    <div style={{ height: "80vh", width: "100%" }}>
-      <ProductMap />
+    <div className='w-full h-full'>
+      <DynamicProductMap>
+        {targetCoords && <FlyTo lat={targetCoords.lat} lng={targetCoords.lng} zoom={13} />}
+      </DynamicProductMap>
     </div>
   );
 }

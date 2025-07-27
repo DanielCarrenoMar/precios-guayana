@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           disableTransitionOnChange
         >
         <Navbar user={userProfile} />
-        <div className="flex-1 w-full pt-20 flex flex-col" style={{ minHeight: "calc(100vh - 80px)" }}>
+        <div className="flex-1 w-full h-full pt-17 flex flex-col">
           {children}
         </div>
         </ThemeProvider>

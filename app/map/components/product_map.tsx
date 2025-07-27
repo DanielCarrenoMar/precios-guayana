@@ -20,7 +20,7 @@ export default function ProductMap({children}: {children?:React.ReactNode}) {
     }, []);
     return (
         <>
-            <MapContainer center={[8.279540502204656, -62.76105724412922]} zoom={13} scrollWheelZoom={false} style={{ width: "100%", height: "100%" }}>
+            <MapContainer center={[8.279540502204656, -62.76105724412922]} zoom={13} scrollWheelZoom={true} style={{ width: "100%", height: "100%" }}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
