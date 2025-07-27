@@ -4,7 +4,6 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Navbar from "@/components/nav-bar";
 import { createClient } from "@/lib/supabase/server";
-import { ReactNode } from "react";
 import { getUserById } from "@/lib/supabase/repository";
 import { UUID } from "crypto";
 
@@ -33,12 +32,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <html lang="es">
-      <body className="min-h-screen flex flex-col">
+    <html lang="es"  suppressHydrationWarning className="h-full w-full">
+      <body className={`${geistSans.className} antialiased h-full w-full`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
         <Navbar user={userProfile} />
         <div className="flex-1 w-full pt-20 flex flex-col" style={{ minHeight: "calc(100vh - 80px)" }}>
           {children}
         </div>
+        </ThemeProvider>
       </body>
     </html>
   );
