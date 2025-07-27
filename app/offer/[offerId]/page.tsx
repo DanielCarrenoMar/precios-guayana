@@ -1,7 +1,5 @@
-import { getOfferById, getLastOffers } from '@/lib/supabase/repository';
+import { getOfferById, getLastOffers, getUserById } from '@/lib/supabase/repository';
 import { notFound } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { MapPin } from 'lucide-react';
 import Link from 'next/link';
 import OfferCard from '@/components/offerCard';
 
@@ -21,6 +19,8 @@ export default async function OfferPage({ params }: Props) {
   if (!offer) {
     notFound();
   }
+  const user = await getUserById(offer.user_id)
+  const date = new Date(user.created_at);
 
   // Buscar ofertas relacionadas (excluyendo la actual)
   const relatedOffers = (await getLastOffers(12))
@@ -69,36 +69,32 @@ export default async function OfferPage({ params }: Props) {
               )}
             </div>
 
-            {/* Offer Info */}
             <div className="space-y-6">
-              {/* Title and URL */}
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Oferta Especial</h1>
-                <div className="flex items-center space-x-4">
-                  <span className="text-2xl font-bold text-primary">Oferta</span>
-                  <Link href={offer.url} target="_blank" rel="noopener noreferrer" className="text-primary underline text-sm">Ver Detalle</Link>
-                </div>
+              <div className='flex items-center gap-4'>
+                <h1 className="text-3xl font-bold text-gray-900">Oferta Especial</h1>
+                <Link href={offer.url} target="_blank" rel="noopener noreferrer" className="text-primary underline text-sm">Ver Detalle</Link>
               </div>
 
-              {/* Description */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Descripción</h3>
                 <p className="text-gray-600 leading-relaxed">{offer.description}</p>
               </div>
 
-              {/* Location */}
-              <div className="flex items-center space-x-2 text-gray-600">
-                <MapPin className="w-5 h-5" />
-                <span>Ubicación: Ciudad Guayana, Venezuela</span>
-              </div>
-
-              {/* Actions */}
-              <div className="space-y-3 pt-4">
-                <Link href="/map">
-                  <Button variant="outline" className="w-full py-3 text-lg">
-                    Ver en Mapa
-                  </Button>
-                </Link>
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Información del Vendedor</h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">
+                        {user.name.toString().charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <Link href={`/user/${user.id}`}>
+                      <p className="font-medium text-gray-900">{user.name}</p>
+                      <p className="text-sm text-gray-600">Miembro desde {date.getFullYear()}</p>
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
