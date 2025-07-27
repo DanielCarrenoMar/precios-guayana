@@ -105,7 +105,7 @@ const Navbar = async ({
                             </NavigationMenu>
                         </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-4 items-center">
                         {user ? (
                             <>
                                 <Link href="protected/profile">Hey, {user.name}!</Link>
