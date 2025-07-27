@@ -30,10 +30,10 @@ export default function ProductMap({children}: {children?:React.ReactNode}) {
                 {products.map((product) => (
                     product.latitude && product.longitude &&
                     <Marker key={product.id} position={[product.latitude, product.longitude]}  icon={new L.Icon({
-                    iconUrl: product.imagesPath[0], // Path to your image in the public folder
-                    iconSize: [38, 38], // Size of the icon [width, height]
-                    iconAnchor: [19, 38], // Point of the icon which will correspond to marker's location
-                    popupAnchor: [0, -38] // Point from which the popup should open relative to the iconAnchor
+                    iconUrl: product.imagesPath[0],
+                    iconSize: [38, 38],
+                    iconAnchor: [19, 38],
+                    popupAnchor: [0, -38]
                 })}>
                     <Popup>
                         <div className="flex flex-col gap-2">

@@ -4,6 +4,73 @@ import { createClient } from "@/lib/supabase/client";
 import { insertProduct, uploadImage } from "@/lib/supabase/repository";
 import { redirect } from "next/navigation";
 import { UUID } from "crypto";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+interface LocationPickerMapProps {
+  initialLat: number;
+  initialLng: number;
+  onLocationChange: (lat: number, lng: number) => void;
+}
+
+function LocationPickerMap({
+  initialLat,
+  initialLng,
+  onLocationChange,
+}: LocationPickerMapProps) {
+  const [position, setPosition] = useState<[number, number]>([
+    initialLat,
+    initialLng,
+  ]);
+
+  // Update map position if initialLat/Lng change (e.g., from geolocation)
+  useEffect(() => {
+    setPosition([initialLat, initialLng]);
+  }, [initialLat, initialLng]);
+
+  const MapEvents = () => {
+    useMapEvents({
+      click: (e) => {
+        setPosition([e.latlng.lat, e.latlng.lng]);
+        onLocationChange(e.latlng.lat, e.latlng.lng);
+      },
+      locationfound: (e) => {
+        setPosition([e.latlng.lat, e.latlng.lng]);
+        onLocationChange(e.latlng.lat, e.latlng.lng);
+      },
+    });
+    return null;
+  };
+
+  return (
+    <MapContainer
+      center={position}
+      zoom={13}
+      scrollWheelZoom={true}
+      className="h-80 w-full rounded-md shadow-md"
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <MapEvents />
+      {position && (
+        <Marker
+          position={position}
+          icon={
+            new L.Icon({
+              iconUrl: "/marker-icon.png",
+              iconSize: [24, 32],
+              iconAnchor: [12, 32], // Adjust anchor to center bottom of icon
+              popupAnchor: [0, -32],
+            })
+          }
+        ></Marker>
+      )}
+    </MapContainer>
+  );
+}
 
 export default function CreatePage() {
   const [title, setTitle] = useState("");
@@ -12,13 +79,16 @@ export default function CreatePage() {
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
   const [category, setCategory] = useState("");
-  // Change imageFile to an array of Files
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-  // Change imageUrl to an array of strings
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [userId, setUserId] = useState<UUID>();
+  const [useCurrentLocation, setUseCurrentLocation] = useState(false); // New state for checkbox
+
+  // Default coordinates for Guayana City, Bolívar, Venezuela
+  const GUAYANA_CITY_LAT = 8.3546;
+  const GUAYANA_CITY_LNG = -62.6416;
 
   useEffect(() => {
     async function fetchSession() {
@@ -32,7 +102,54 @@ export default function CreatePage() {
       }
     }
     fetchSession();
+
+    // Set initial map coordinates to default Guayana City
+    // This will be overridden if useCurrentLocation is checked and successful
+    setLat(GUAYANA_CITY_LAT.toString());
+    setLng(GUAYANA_CITY_LNG.toString());
   }, []);
+
+  useEffect(() => {
+    if (useCurrentLocation) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLat(position.coords.latitude.toString());
+            setLng(position.coords.longitude.toString());
+            setErrorText("");
+          },
+          (error) => {
+            console.error("Error getting geolocation:", error);
+            setErrorText(
+              "No se pudo obtener la ubicación actual. Por favor, selecciona manualmente en el mapa."
+            );
+            setUseCurrentLocation(false);
+
+            setLat(GUAYANA_CITY_LAT.toString());
+            setLng(GUAYANA_CITY_LNG.toString());
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+          }
+        );
+      } else {
+        setErrorText("Tu navegador no soporta la geolocalización.");
+        setUseCurrentLocation(false); // Uncheck if not supported
+      }
+    } else {
+      // If "use current location" is unchecked, reset to default or allow map selection
+      // We don't clear lat/lng here, so the last selected map position (or default) remains
+      // until a new one is selected on the map.
+    }
+  }, [useCurrentLocation]);
+
+  const handleLocationChange = (newLat: number, newLng: number) => {
+    setLat(newLat.toString());
+    setLng(newLng.toString());
+    setUseCurrentLocation(false);
+  };
 
   async function handleImageUpload() {
     if (imageFiles.length === 0) {
@@ -50,17 +167,14 @@ export default function CreatePage() {
       } catch (error) {
         console.error("Error uploading image:", file.name, error);
         setErrorText(`Error al subir la imagen: ${file.name}`);
-        // Decide if you want to stop on first error or continue
-        throw error; // Re-throw to catch in .allSettled
+        throw error;
       }
     });
 
     try {
-      // Use Promise.allSettled to handle all promises and see their status
       await Promise.allSettled(uploadPromises);
-      setImageUrls(uploadedUrls); // Set all successfully uploaded URLs
+      setImageUrls(uploadedUrls);
     } catch (error) {
-      // Error handling for any failed uploads caught above
       console.error("One or more image uploads failed.", error);
     } finally {
       setUploading(false);
@@ -73,8 +187,12 @@ export default function CreatePage() {
       setErrorText("Primero sube al menos una imagen.");
       return;
     }
-    if (!userId){
-      setErrorText("No esta registrado");
+    if (!userId) {
+      setErrorText("No está registrado.");
+      return;
+    }
+    if (!lat || !lng || parseFloat(lat) === 0 || parseFloat(lng) === 0) {
+      setErrorText("Por favor, selecciona una ubicación o usa tu ubicación actual.");
       return;
     }
 
@@ -119,22 +237,38 @@ export default function CreatePage() {
           required
           className="border p-2 rounded"
         />
-        <input
-          type="text"
-          placeholder="Latitud"
-          value={lat}
-          onChange={(e) => setLat(e.target.value)}
-          required
-          className="border p-2 rounded"
-        />
-        <input
-          type="text"
-          placeholder="Longitud"
-          value={lng}
-          onChange={(e) => setLng(e.target.value)}
-          required
-          className="border p-2 rounded"
-        />
+
+        <div className="mb-4">
+          <label className="flex items-center gap-2 mb-2">
+            <input
+              type="checkbox"
+              checked={useCurrentLocation}
+              onChange={(e) => setUseCurrentLocation(e.target.checked)}
+              className="form-checkbox"
+            />
+            <span>Usar mi ubicación actual</span>
+          </label>
+
+          {!useCurrentLocation && (
+            <>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Selecciona la ubicación en el mapa:
+              </label>
+              <LocationPickerMap
+                initialLat={parseFloat(lat || GUAYANA_CITY_LAT.toString())}
+                initialLng={parseFloat(lng || GUAYANA_CITY_LNG.toString())}
+                onLocationChange={handleLocationChange}
+              />
+            </>
+          )}
+
+          {lat && lng && (
+            <p className="mt-2 text-sm text-gray-600">
+              Ubicación seleccionada: Latitud: **{lat}**, Longitud: **{lng}**
+            </p>
+          )}
+        </div>
+
         <input
           type="text"
           placeholder="Categoría"
@@ -146,10 +280,10 @@ export default function CreatePage() {
         <input
           type="file"
           accept="image/*"
-          multiple // Key change: allow multiple file selection
+          multiple
           onChange={(e) => {
             if (e.target.files) {
-              setImageFiles(Array.from(e.target.files)); // Convert FileList to array
+              setImageFiles(Array.from(e.target.files));
             } else {
               setImageFiles([]);
             }
@@ -160,7 +294,7 @@ export default function CreatePage() {
           type="button"
           onClick={handleImageUpload}
           disabled={imageFiles.length === 0 || uploading}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
         >
           {uploading ? "Subiendo imágenes..." : "Subir imágenes"}
         </button>
@@ -184,7 +318,10 @@ export default function CreatePage() {
           </div>
         )}
         {errorText && <p className="text-red-500">{errorText}</p>}
-        <button type="submit" className="bg-green-500 text-white p-2 rounded">
+        <button
+          type="submit"
+          className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
+        >
           Crear publicación
         </button>
       </form>
