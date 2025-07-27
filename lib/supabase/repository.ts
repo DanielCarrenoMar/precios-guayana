@@ -7,10 +7,14 @@ import { UUID } from 'crypto'
 async function parseProduct(product: Product): Promise<Product> {
   const imagesPath = await getImagesByProductId(product.id)
   const reviews = await getReviewsByProductId(product.id)
-  const avgRating =
-    reviews && reviews.length
-      ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length
-      : 0
+  if (reviews.length === 0) return { ...product, imagesPath, rate: 0 }
+
+  let avgRatingSum = 0
+  reviews.map((review)=>{
+    avgRatingSum += review.rating
+  })
+  const avgRating = avgRatingSum / reviews.length
+  
   return { ...product, imagesPath, rate: avgRating }
 }
 
