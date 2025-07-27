@@ -37,9 +37,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="es">
-      <body>
+      <body className="min-h-screen flex flex-col">
         <Navbar user={userProfile} />
-        {children}
+        <div className="flex-1 w-full pt-20 flex flex-col" style={{ minHeight: "calc(100vh - 80px)" }}>
+          {children}
+        </div>
       </body>
     </html>
   );
