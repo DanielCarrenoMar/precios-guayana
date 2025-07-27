@@ -112,7 +112,7 @@ export default async function ProductPage({ params }: Props){
               {/* Actions */}
               {product.latitude && product.longitude && <div className="space-y-3 pt-4">
                 <Link href={`/map?lat=${product.latitude}&lng=${product.longitude}`}>
-                  <Button variant="outline" className="w-full py-3 text-lg">
+                  <Button variant="link" className="w-full py-3 text-lg">
                     Ver en Mapa
                   </Button>
                 </Link>
