@@ -110,16 +110,13 @@ export default async function ProductPage({ params }: Props){
               </div>
 
               {/* Actions */}
-              <div className="space-y-3 pt-4">
-                <Button className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-lg font-semibold">
-                  Contactar Vendedor
-                </Button>
-                <Link href="/map">
+              {product.latitude && product.longitude && <div className="space-y-3 pt-4">
+                <Link href={`/map?lat=${product.latitude}&lng=${product.longitude}`}>
                   <Button variant="outline" className="w-full py-3 text-lg">
                     Ver en Mapa
                   </Button>
                 </Link>
-              </div>
+              </div>}
 
               {/* Seller Info */}
               <div className="border-t pt-6">
@@ -142,7 +139,6 @@ export default async function ProductPage({ params }: Props){
           </div>
         </div>
 
-        {/* Related Products Section */}
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Productos Relacionados</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

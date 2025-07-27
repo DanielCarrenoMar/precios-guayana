@@ -8,7 +8,7 @@ import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaf
 import L from 'leaflet';
 import Link from 'next/link';
 
-export default function ProductMap() {
+export default function ProductMap({children}: {children?:React.ReactNode}) {
     const [products, setProducts] = useState<Product[]>([])
 
     useEffect(() => {
@@ -25,6 +25,7 @@ export default function ProductMap() {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+                {children}
                 <LocationMarker />
                 {products.map((product) => (
                     product.latitude && product.longitude &&
