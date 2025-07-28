@@ -313,6 +313,17 @@ export async function getUserById(id: UUID): Promise<User> {
   return data as User
 }
 
+export async function updateUser(user: UserPetition){
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('user')
+    .update(user)
+    .eq('id', user.id)
+
+  if (error) throw error
+}
+
 export async function insertUser(user: UserPetition) {
   const supabase = await createClient()
 

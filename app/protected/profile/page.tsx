@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getProductsByUserId, getUserById } from "@/lib/supabase/repository";
 import { UUID } from "crypto";
 import Image from "next/image";
-import { LinkIcon, MapPin } from "lucide-react";
+import { Edit, LinkIcon, MapPin } from "lucide-react";
 import Link from "next/link";
 import ProductCard from "@/components/productCard";
 import { Button } from "@/components/ui/button";
@@ -67,12 +67,18 @@ export default async function ProfilePage() {
             </div>
             <p className="text-xs text-gray-500 mt-3">Miembro desde {formatDate(user.created_at)}</p>
           </div>
+          <div className="sm:ml-auto">
+            <Link href={`/protected/editProfile`} className="inline-flex items-center gap-2 bg-primary text-secondary-foreground hover:bg-primary/80 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+              <Edit size={16} />
+              Editar Perfil
+            </Link>
+          </div>
         </header>
 
         <main className="mt-12 p-6 rounded-xl bg-primary-foreground">
           <span className="flex gap-4 items-center mb-6">
             <h2 className="text-4xl font-bold">Tus Productos</h2>
-              <Button variant="default" >Subir producto</Button>
+            <Button variant="default" >Subir producto</Button>
           </span>
           {products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -90,7 +96,7 @@ export default async function ProfilePage() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-400">Este usuario aún no ha subido productos.</p>
+            <p className="text-gray-400">Aún no has subido productos.</p>
           )}
         </main>
       </div>
