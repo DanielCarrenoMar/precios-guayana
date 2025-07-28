@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-import { Offer, OfferInsert, OfferPetition, Product, ProductInsert, ProductPetition, Review, UserPetition, User } from '@/domain/interface'
+import { Offer, OfferInsert, OfferPetition, Product, ProductInsert, ProductPetition, Review, UserPetition, User, ReviewInsert, ReviewUpdate } from '@/domain/interface'
 import { UUID } from 'crypto'
 
 // Products
@@ -261,7 +261,25 @@ export async function getReviewsByProductId(productId: number): Promise<Review[]
   return data as Review[]
 }
 
-export async function insertReview(review: Review) {
+export async function updateReview(review: ReviewUpdate){
+  const supabase = await createClient()
+
+  const updateData = {
+    rating: review.rating,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase
+    .from('review')
+    .update(updateData)
+    .eq('id', review.id)
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function insertReview(review: ReviewInsert) {
   const supabase = await createClient()
   const { error } = await supabase
     .from('review')

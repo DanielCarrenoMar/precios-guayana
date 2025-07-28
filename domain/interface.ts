@@ -84,3 +84,18 @@ export interface Review {
     created_at: string
     updated_at: string
 }
+export interface ReviewInsert {
+    user_id: UUID
+    product_id: number
+    rating: number
+    created_at?: string
+    updated_at?: string
+}
+export interface ReviewUpdate {
+    id: number
+    user_id?: UUID
+    product_id?: number
+    rating: number
+    created_at?: string
+    updated_at?: string
+}
