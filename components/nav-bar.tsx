@@ -59,7 +59,7 @@ const Navbar = async ({
         url: "/",
         src: "/logo.png",
         alt: "logo",
-        title: "Precios Guayana",
+        title: "",
     },
     menu = [
         { title: "Inicio", url: "/" },

@@ -298,8 +298,7 @@ export async function getAllUser() {
 
   if (error) throw error
 
-  let users = data as User[]
-  return users;
+  return data as User[];
 }
 
 export async function getUserById(id: UUID): Promise<User> {

@@ -17,7 +17,6 @@ export default function RatingButton({
     size = 28,
     className,
 }: RatingButtonProps) {
-    const [hoverRating, setHoverRating] = useState(0);
     const [selectedRating, setSelectedRating] = useState(initialRating);
 
     const handleStarClick = (index: number) => {
@@ -30,7 +29,7 @@ export default function RatingButton({
     return (
         <div className={`flex items-center gap-0.5 ${className}`}>
             {[1, 2, 3, 4, 5].map((index) => {
-                const isFilled = index <= (hoverRating || selectedRating);
+                const isFilled = index <= (selectedRating);
                 const starColor = isFilled ? "text-yellow-500" : "text-gray-400";
 
                 return (
