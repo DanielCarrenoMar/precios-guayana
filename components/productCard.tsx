@@ -40,7 +40,7 @@ export default function ProductCard({ id, user_id, price, product, image, update
           {price}$
         </div>
         <img
-          src={image}
+          src={image || "/no-image.png"}
           alt={product}
           className="max-h-32 max-w-full object-contain rounded-lg group-hover:scale-105 transition-transform duration-300"
         />
@@ -72,7 +72,6 @@ export default function ProductCard({ id, user_id, price, product, image, update
               </svg>
             ))}
           </div>
-          <span className="text-xs text-primary-foreground ml-1">({rating}.0)</span>
         </div>
       </div>
     </Link>
