@@ -86,7 +86,7 @@ export default function MapPage() {
               <div className="flex flex-col gap-2">
                 <h3 className="text-lg font-semibold">{user.name}</h3>
                 <p>{user.bios}</p>
-                <Link href={`/product/${user.id}`} className="text-blue-500 hover:underline">Ver detalles</Link>
+                <Link href={`/user/${user.id}`} className="text-blue-500 hover:underline">Ver detalles</Link>
               </div>
             </Popup>
           </Marker>

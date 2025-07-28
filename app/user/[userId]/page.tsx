@@ -38,7 +38,7 @@ export default async function UserPage({ params }: Props) {
                 <header className="bg-primary-foreground p-6 rounded-xl flex flex-col sm:flex-row items-center gap-6">
                     <div className="flex-shrink-0">
                         {user.imageProfilePath ?
-                            <Image
+                            <img
                                 src={user.imageProfilePath}
                                 alt={`Foto de perfil de ${user.name}`}
                                 width={128}
@@ -56,10 +56,10 @@ export default async function UserPage({ params }: Props) {
 
                         <div className="flex items-center justify-center sm:justify-start gap-6 mt-4 text-sm text-gray-400">
                             {user.contact &&
-                                <span>
+                                <Link href={user.contact} target="_blank" rel="noopener noreferrer" className="flex gap-2">
                                     <LinkIcon size={16} />
                                     <h3>{user.contact}</h3>
-                                </span>
+                                </Link>
                             }
                             {user.latitude && user.longitude &&
                                 <Link href={`/map?lat=${user.latitude}&lng=${user.longitude}`} className="flex items-center gap-2 hover:text-primary transition-colors">
