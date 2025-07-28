@@ -2,12 +2,13 @@
 import { getProductById, getProductsByNameAndCategory, getReviewsByProductId, getUserById, insertReview, updateReview } from '@/lib/supabase/repository';
 import { notFound } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Star, MapPin, LoaderPinwheel } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import Link from 'next/link';
 import ProductCard from '@/components/productCard';
 import { useEffect, useState } from 'react';
 import { Product, User } from '@/domain/interface';
 import RatingButton from '@/components/rating_button';
+import { fetchBolivarConversion } from '@/lib/dollarApi/dollarApi';
 
 interface Props {
   params: Promise<{ productId: string }>
@@ -18,6 +19,7 @@ export default function ProductPage({ params }: Props) {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>()
   const [user, setUser] = useState<User>()
   const [date, setDate] = useState<Date>()
+  const [priceBs, setPriceBs] = useState<number>()
 
   useEffect(() => {
     params.then(data => {
@@ -27,6 +29,9 @@ export default function ProductPage({ params }: Props) {
       }
       getProductById(productIdNum).then(product => {
         setProduct(product)
+        fetchBolivarConversion(product.price).then(priceBs => {
+          setPriceBs(priceBs)
+        })
         getUserById(product.user_id).then(user => {
           setUser(user)
           setDate(new Date(user.created_at))
@@ -121,11 +126,15 @@ export default function ProductPage({ params }: Props) {
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.title}</h1>
                 <div className="flex items-center space-x-4">
-                  <span className="text-4xl font-bold text-primary">{product.price}$</span>
-                  <div className="flex items-center space-x-1">
-                    <RatingButton initialRating={product.rate} onRatingChange={onRateChange} />
-                  </div>
+                  <span className="flex gap-2 align-baseline">
+                    <h3 className='text-4xl font-bold text-primary'>{product.price}$</h3>
+                    <h4 className="text-xl text-gray-500">({priceBs && Math.floor(priceBs * 100) / 100}bs)</h4>
+                  </span>
                 </div>
+              </div>
+
+              <div className="flex items-center space-x-1">
+                <RatingButton initialRating={product.rate} onRatingChange={onRateChange} />
               </div>
 
               <div>
