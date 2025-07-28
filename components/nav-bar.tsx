@@ -1,5 +1,4 @@
 import { Menu } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
 
 import {
     Accordion,
@@ -52,6 +51,7 @@ interface NavbarProps {
             url: string;
         };
     };
+    user?: { name?: string } | null;
 }
 
 const Navbar = async ({
@@ -59,7 +59,7 @@ const Navbar = async ({
         url: "/",
         src: "/logo.png",
         alt: "logo",
-        title: "Precios Guayana",
+        title: "",
     },
     menu = [
         { title: "Inicio", url: "/" },
@@ -69,26 +69,22 @@ const Navbar = async ({
         },
         {
             title: "Perfil",
-            url: "protected/profile",
+            url: "/protected/profile",
         },
         {
             title: "Subir producto",
-            url: "protected/create",
+            url: "/protected/create",
         },
     ],
     auth = {
         login: { title: "Iniciar sesión", url: "/auth/login" },
         signup: { title: "Registrarse", url: "/auth/sign-up" },
     },
+    user,
 }: NavbarProps) => {
-    const supabase = await createClient();
-
-    const { data } = await supabase.auth.getClaims();
-
-    const user = data?.claims;
 
     return (
-        <section className="py-4 fixed top-0 left-0 w-full z-50 bg-background border-b">
+        <section className="py-4 fixed top-0 left-0 w-full z-50 bg-background border-b flex justify-center">
             <div className="container">
                 {/* Desktop Menu */}
                 <nav className="hidden justify-between lg:flex">
@@ -108,10 +104,10 @@ const Navbar = async ({
                             </NavigationMenu>
                         </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-4 items-center">
                         {user ? (
                             <>
-                                <Link href="protected/profile">Hey, {user.email}!</Link>
+                                <Link href="protected/profile">Hey, {user.name}!</Link>
                                 <LogoutButton />
                             </>
                         ) : (
@@ -160,7 +156,7 @@ const Navbar = async ({
                                     <div className="flex flex-col gap-3">
                                         {user ? (
                                             <>
-                                                <Link href="protected/profile">Hey, {user.email}!</Link>
+                                                <Link href="protected/profile">Hey, {user.name}!</Link>
                                                 <LogoutButton />
                                             </>
                                         ) : (

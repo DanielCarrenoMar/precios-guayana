@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-import { Offer, OfferInsert, OfferPetition, Product, ProductInsert, ProductPetition, Review, UserPetition, User } from '@/domain/interface'
+import { Offer, OfferInsert, OfferPetition, Product, ProductInsert, ProductPetition, Review, UserPetition, User, ReviewInsert, ReviewUpdate } from '@/domain/interface'
 import { UUID } from 'crypto'
 
 // Products
@@ -7,17 +7,21 @@ import { UUID } from 'crypto'
 async function parseProduct(product: Product): Promise<Product> {
   const imagesPath = await getImagesByProductId(product.id)
   const reviews = await getReviewsByProductId(product.id)
-  const avgRating =
-    reviews && reviews.length
-      ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length
-      : 0
+  if (reviews.length === 0) return { ...product, imagesPath, rate: 0 }
+
+  let avgRatingSum = 0
+  reviews.map((review) => {
+    avgRatingSum += review.rating
+  })
+  const avgRating = avgRatingSum / reviews.length
+
   return { ...product, imagesPath, rate: avgRating }
 }
 
 export async function insertProduct(product: ProductPetition) {
   const supabase = await createClient()
 
-  const query: ProductInsert = { 
+  const query: ProductInsert = {
     user_id: product.user_id,
     category: product.category,
     description: product.description,
@@ -28,9 +32,9 @@ export async function insertProduct(product: ProductPetition) {
   }
 
   const { data, error } = await supabase
-      .from('product')
-      .insert(query)
-      .select('id');
+    .from('product')
+    .insert(query)
+    .select('id');
   if (error || !data[0].id) throw error
   const id = data[0].id
 
@@ -41,9 +45,9 @@ export async function getAllProducts(): Promise<Product[]> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-      .from('product')
-      .select()
-      
+    .from('product')
+    .select()
+
   if (error) throw error
 
   let products = data as Product[]
@@ -59,10 +63,10 @@ export async function getProductById(id: number): Promise<Product> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-      .from('product')
-      .select()
-      .eq('id', id)
-      .single()
+    .from('product')
+    .select()
+    .eq('id', id)
+    .single()
 
   if (error) throw error
 
@@ -93,15 +97,34 @@ export async function getProductsByNameAndCategory(name: string, category: strin
   return products;
 }
 
+export async function getProductsByUserId(userId: UUID): Promise<Product[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('product')
+    .select()
+    .eq('user_id', userId)
+
+  if (error) throw error
+
+  let products = data as Product[]
+
+  products = await Promise.all(
+    products.map(product => parseProduct(product))
+  )
+
+  return products;
+}
+
 // Product Images
 
 async function getImagesByProductId(productId: number): Promise<string[]> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-      .from('product_image')
-      .select('imagePath')
-      .eq('product_id', productId)
+    .from('product_image')
+    .select('imagePath')
+    .eq('product_id', productId)
 
   if (error) throw error
   const imagesPath = data.map((item: { imagePath: string }) => item.imagePath)
@@ -115,8 +138,8 @@ async function insertProductImages(productId: number, imagesPath: string[]) {
     imagePath
   }))
   const { error } = await supabase
-      .from('product_image')
-      .insert(imageObjects)
+    .from('product_image')
+    .insert(imageObjects)
   if (error) throw error
 }
 
@@ -131,10 +154,10 @@ export async function getLastOffers(numberOfOffers: number): Promise<Offer[]> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-      .from('offer')
-      .select()
-      .order('created_at', { ascending: false })
-      .limit(numberOfOffers)
+    .from('offer')
+    .select()
+    .order('created_at', { ascending: false })
+    .limit(numberOfOffers)
 
   if (error) throw error
 
@@ -150,16 +173,16 @@ export async function getLastOffers(numberOfOffers: number): Promise<Offer[]> {
 export async function insertOffer(offer: OfferPetition) {
   const supabase = await createClient()
 
-  const query: OfferInsert = { 
+  const query: OfferInsert = {
     user_id: offer.user_id,
     description: offer.description,
     url: offer.url
   }
 
   const { data, error } = await supabase
-      .from('offer')
-      .insert(query)
-      .select("id")
+    .from('offer')
+    .insert(query)
+    .select("id")
   if (error || !data[0].id) throw error
   const id = data[0].id
 
@@ -170,9 +193,9 @@ export async function getOffersByUserId(userId: UUID): Promise<Offer[]> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-      .from('offer')
-      .select()
-      .eq('user_id', userId)
+    .from('offer')
+    .select()
+    .eq('user_id', userId)
 
   if (error) throw error
   let offers = data as Offer[]
@@ -188,10 +211,10 @@ export async function getOfferById(id: number): Promise<Offer> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-      .from('offer')
-      .select()
-      .eq('id', id)
-      .single()
+    .from('offer')
+    .select()
+    .eq('id', id)
+    .single()
 
   if (error) throw error
   return parseOffer(data as Offer)
@@ -203,9 +226,9 @@ async function getImagesByOfferId(offerId: number): Promise<string[]> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-      .from('offer_image')
-      .select('imagePath')
-      .eq('offer_id', offerId)
+    .from('offer_image')
+    .select('imagePath')
+    .eq('offer_id', offerId)
 
   if (error) throw error
   const imagesPath = data.map((item: { imagePath: string }) => item.imagePath)
@@ -219,8 +242,8 @@ async function insertOfferImages(offerId: number, imagesPath: string[]) {
     imagePath
   }))
   const { error } = await supabase
-      .from('offer_image')
-      .insert(imageObjects)
+    .from('offer_image')
+    .insert(imageObjects)
   if (error) throw error
 }
 
@@ -230,41 +253,82 @@ export async function getReviewsByProductId(productId: number): Promise<Review[]
   const supabase = await createClient()
 
   const { data, error } = await supabase
-      .from('review')
-      .select()
-      .eq('product_id', productId)
+    .from('review')
+    .select()
+    .eq('product_id', productId)
 
   if (error) throw error
   return data as Review[]
 }
 
-export async function insertReview(review: Review) {
+export async function updateReview(review: ReviewUpdate){
+  const supabase = await createClient()
+
+  const updateData = {
+    rating: review.rating,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase
+    .from('review')
+    .update(updateData)
+    .eq('id', review.id)
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function insertReview(review: ReviewInsert) {
   const supabase = await createClient()
   const { error } = await supabase
-      .from('review')
-      .insert(review)
+    .from('review')
+    .insert(review)
   if (error) throw error
 }
 
 // Users
 
+export async function getAllUser() {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('user')
+    .select()
+
+  if (error) throw error
+
+  return data as User[];
+}
+
 export async function getUserById(id: UUID): Promise<User> {
   const supabase = await createClient()
   const { data, error } = await supabase
-      .from('user')
-      .select()
-      .eq('id', id)
-      .single()
+    .from('user')
+    .select()
+    .eq('id', id)
+    .single()
   if (error) throw error
   return data as User
+}
+
+export async function updateUser(user: UserPetition){
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('user')
+    .update(user)
+    .eq('id', user.id)
+
+  if (error) throw error
 }
 
 export async function insertUser(user: UserPetition) {
   const supabase = await createClient()
 
   const { error } = await supabase
-      .from('user')
-      .insert(user)
+    .from('user')
+    .insert(user)
 
   if (error) throw error
 }
@@ -274,8 +338,8 @@ export async function uploadImage(file: File): Promise<string> {
   const supabase = await createClient()
   const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}`
   const { error } = await supabase.storage
-      .from('product-image')
-      .upload(fileName, file)
+    .from('product-image')
+    .upload(fileName, file)
 
   if (error) throw error
 

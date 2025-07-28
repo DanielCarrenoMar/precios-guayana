@@ -1,62 +1,104 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
+import { getProductsByUserId, getUserById } from "@/lib/supabase/repository";
+import { UUID } from "crypto";
+import Image from "next/image";
+import { Edit, LinkIcon, MapPin } from "lucide-react";
+import Link from "next/link";
+import ProductCard from "@/components/productCard";
 import { Button } from "@/components/ui/button";
-import type { User } from "@supabase/auth-js";
 
-export default function ProfilePage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data, error }) => {
-      if (error || !data?.user) {
-        router.replace("/auth/login");
-      } else {
-        setUser(data.user);
-      }
-      setLoading(false);
-    });
-  }, [router]);
-
-  if (loading) {
+export default async function ProfilePage() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const userClaim = data?.claims;
+  if (!userClaim) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <span className="text-gray-500">Cargando perfil...</span>
-      </div>
-    );
+      <div>error</div>
+    )
   }
+  const userId = userClaim?.sub as UUID
 
-  if (!user) return null;
+  const user = await getUserById(userId)
+  const products = await getProductsByUserId(userId)
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-VE', {
+      year: 'numeric',
+      month: 'long',
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-[#EBEBEB] py-12">
-      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow p-8 mt-12">
-        <h1 className="text-3xl font-bold mb-6">Mi Perfil</h1>
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-24 h-24 rounded-full bg-[#558C2F] flex items-center justify-center text-white text-3xl font-bold mb-4">
-            {user.email?.charAt(0).toUpperCase()}
+    <div className=" text-primary min-h-screen font-sans p-4 sm:p-6 md:p-8">
+      <div className="max-w-7xl mx-auto">
+
+        <header className="bg-primary-foreground p-6 rounded-xl flex flex-col sm:flex-row items-center gap-6">
+          <div className="flex-shrink-0">
+            {user.imageProfilePath ?
+              <Image
+                src={user.imageProfilePath}
+                alt={`Foto de perfil de ${user.name}`}
+                width={128}
+                height={128}
+                className="rounded-full object-cover border-4 border-gray-700"
+              /> :
+              <div className="size-32 bg-primary text-4xl font-bold text-primary-foreground rounded-full flex justify-center items-center">
+                {user.name.toUpperCase()[0]}
+              </div>
+            }
           </div>
-          <div className="text-lg font-semibold">{user.email}</div>
-        </div>
-        <div className="mb-4">
-          <span className="block text-gray-600 text-sm">ID de usuario:</span>
-          <span className="block text-xs">{user.id}</span>
-        </div>
-        {/* Aquí puedes agregar más campos del usuario o un formulario de edición */}
-        <Button
-          className="mt-8 w-full"
-          onClick={async () => {
-            const supabase = createClient();
-            await supabase.auth.signOut();
-            router.replace("/auth/login");
-          }}
-        >
-          Cerrar sesión
-        </Button>
+          <div className="text-center sm:text-left">
+            <h1 className="text-4xl font-bold">{user.name}</h1>
+            <p className="text-primary/80 mt-2 max-w-2xl">{user.bios}</p>
+
+            <div className="flex items-center justify-center sm:justify-start gap-6 mt-4 text-sm text-gray-400">
+              {user.contact &&
+                <span>
+                  <LinkIcon size={16} />
+                  <h3>{user.contact}</h3>
+                </span>
+              }
+              {user.latitude && user.longitude &&
+                <Link href={`/map?lat=${user.latitude}&lng=${user.longitude}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                  <MapPin size={16} />
+                  <span>Ver en el mapa</span>
+                </Link>
+              }
+            </div>
+            <p className="text-xs text-gray-500 mt-3">Miembro desde {formatDate(user.created_at)}</p>
+          </div>
+          <div className="sm:ml-auto">
+            <Link href={`/protected/editProfile`} className="inline-flex items-center gap-2 bg-primary text-secondary-foreground hover:bg-primary/80 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+              <Edit size={16} />
+              Editar Perfil
+            </Link>
+          </div>
+        </header>
+
+        <main className="mt-12 p-6 rounded-xl bg-primary-foreground">
+          <span className="flex gap-4 items-center mb-6">
+            <h2 className="text-4xl font-bold">Tus Productos</h2>
+            <Button variant="default" >Subir producto</Button>
+          </span>
+          {products.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  user_id={product.user_id}
+                  price={product.price}
+                  image={product.imagesPath[0]}
+                  product={product.title}
+                  rating={product.rate}
+                  update_at={product.updated_at}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400">Aún no has subido productos.</p>
+          )}
+        </main>
       </div>
     </div>
   );

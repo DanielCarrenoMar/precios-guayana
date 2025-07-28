@@ -1,6 +1,9 @@
+import Starfield from "./starfield";
+
 export default function HeroSection() {
   return (
-    <section className="bg-[#EBEBEB] py-16 mb-12">
+    <section className="py-16 mb-3 mt-16">
+      <Starfield />
       <div className="container mx-auto px-4 text-center">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
