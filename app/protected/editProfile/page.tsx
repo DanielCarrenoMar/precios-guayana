@@ -1,12 +1,17 @@
 "use client"
-import LocationPickerMap from "@/components/location-picker-map";
 import { Button } from "@/components/ui/button";
 import { User, UserPetition } from "@/domain/interface";
 import { createClient } from "@/lib/supabase/client";
 import { getUserById, updateUser } from "@/lib/supabase/repository";
 import { UUID } from "crypto";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState, FormEvent } from "react";
+
+const LocationPickerMap = dynamic(
+  () => import('../../../components/location-picker-map'), {
+  ssr: false,
+});
 
 export default function EditProfilePage() {
     const supabase = createClient();

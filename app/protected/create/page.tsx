@@ -5,7 +5,12 @@ import { insertProduct, uploadImage } from "@/lib/supabase/repository";
 import { redirect } from "next/navigation";
 import { UUID } from "crypto";
 import { Button } from "@/components/ui/button"; // Assuming this is your Shadcn UI Button
-import LocationPickerMap from "@/components/location-picker-map";
+import dynamic from "next/dynamic";
+
+const LocationPickerMap = dynamic(
+  () => import('../../../components/location-picker-map'), {
+  ssr: false,
+});
 
 export default function CreatePage() {
   const [title, setTitle] = useState("");
