@@ -3,7 +3,6 @@ import ProductCard from "@/components/productCard";
 import { getOffersByUserId, getProductsByUserId, getUserById } from "@/lib/supabase/repository";
 import { UUID } from "crypto";
 import { LinkIcon, MapPin } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
